@@ -1,0 +1,26 @@
+.DS_Store
+# Compilation of Ledger's app
+src/glyphs.c
+src/glyphs.h
+bin/
+debug/
+dep/
+obj/
+
+
+# Editors
+.vscode/
+.idea/
+.vagrant/
+
+# Python
+*.pyc[cod]
+*.egg
+__pycache__/
+*.egg-info/
+.eggs/
+.python-version
+
+dev-env/
+pyledger/
+*.log
