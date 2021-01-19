@@ -13,19 +13,11 @@ unsigned char G_io_seproxyhal_spi_buffer[IO_SEPROXYHAL_BUFFER_SIZE_B];
 #define INS_GET_VIEW 0x03
 #define INS_GET_PRIV 0x04
 #define INS_IMPORT_PRIV 0x05
-#define INS_GEN_CCM 0x06
-#define INS_GEN_OTA 0x07
-#define INS_GEN_RSIG 0x08
-#define INS_GEN_PROF 0x09
-#define INS_GEN_ATAG 0x10
-#define INS_KEY_IMG 0x11
-#define INS_SIGN_MTD 0x12
-#define INS_GET_OTA 0x13
-
-#define INS_ENC_COIN 0x50
-#define INS_DEC_COIN 0x51
-
-#define INS_GET_VLD 0x90
+#define INS_GET_OTA 0x06
+#define INS_GET_VLD 0x07
+#define INS_KEY_IMG 0x10
+#define INS_GEN_RSIG 0x20
+#define INS_SIGN_MTD 0x21
 
 #define INS_TRUST_DVC 0x60
 
@@ -36,7 +28,7 @@ unsigned char G_io_seproxyhal_spi_buffer[IO_SEPROXYHAL_BUFFER_SIZE_B];
 #define OFFSET_LC 4
 #define OFFSET_CDATA 5
 
-void handleApdu(volatile unsigned int *flags, volatile unsigned int *tx)
+void handleApdu(volatile unsigned int* flags, volatile unsigned int* tx)
 {
     unsigned short sw = 0;
 
@@ -71,42 +63,28 @@ void handleApdu(volatile unsigned int *flags, volatile unsigned int *tx)
             case INS_GET_VIEW:
                 handleGetView(G_io_apdu_buffer[OFFSET_P1], G_io_apdu_buffer[OFFSET_P2], G_io_apdu_buffer + OFFSET_CDATA, G_io_apdu_buffer[OFFSET_LC], flags, tx);
                 break;
-            case INS_GEN_CCM:
-                THROW(0x6D00);
+            case INS_GET_OTA:
+                handleGetOTA(G_io_apdu_buffer[OFFSET_P1], G_io_apdu_buffer[OFFSET_P2], G_io_apdu_buffer + OFFSET_CDATA, G_io_apdu_buffer[OFFSET_LC], flags, tx);
                 break;
-            case INS_GEN_OTA:
-                THROW(0x6D00);
-                break;
-            case INS_GEN_RSIG:
-                THROW(0x6D00);
-                break;
-            case INS_GEN_PROF:
-                THROW(0x6D00);
-                break;
-            case INS_GEN_ATAG:
+            case INS_GET_VLD:
                 THROW(0x6D00);
                 break;
             case INS_KEY_IMG:
                 handleGenKeyImage(G_io_apdu_buffer[OFFSET_P1], G_io_apdu_buffer[OFFSET_P2], G_io_apdu_buffer + OFFSET_CDATA, G_io_apdu_buffer[OFFSET_LC], flags, tx);
                 break;
-            case INS_ENC_COIN:
-                THROW(0x6D00);
-                break;
-            case INS_DEC_COIN:
-                THROW(0x6D00);
-                break;
-            case INS_GET_VLD:
+            case INS_GEN_RSIG:
                 THROW(0x6D00);
                 break;
             case INS_SIGN_MTD:
                 THROW(0x6D00);
                 break;
-            case INS_GET_OTA:
-                handleGetOTA(G_io_apdu_buffer[OFFSET_P1], G_io_apdu_buffer[OFFSET_P2], G_io_apdu_buffer + OFFSET_CDATA, G_io_apdu_buffer[OFFSET_LC], flags, tx);
-                break;
             case INS_TRUST_DVC:
+            if (trust_host == 0)
+            {
                 handleTrustDevice(G_io_apdu_buffer[OFFSET_P1], G_io_apdu_buffer[OFFSET_P2], G_io_apdu_buffer + OFFSET_CDATA, G_io_apdu_buffer[OFFSET_LC], flags, tx);
+            }
                 break;
+
             default:
                 THROW(0x6D00);
                 break;
@@ -222,9 +200,9 @@ void app_main(void)
 }
 
 // override point, but nothing more to do
-void io_seproxyhal_display(const bagl_element_t *element)
+void io_seproxyhal_display(const bagl_element_t* element)
 {
-    io_seproxyhal_display_default((bagl_element_t *)element);
+    io_seproxyhal_display_default((bagl_element_t*)element);
 }
 
 unsigned char io_event(unsigned char channel)
@@ -263,7 +241,7 @@ unsigned char io_event(unsigned char channel)
 
     case SEPROXYHAL_TAG_TICKER_EVENT:
         UX_TICKER_EVENT(G_io_seproxyhal_spi_buffer,
-                        {
+            {
 #ifndef TARGET_NANOX
                             if (UX_ALLOWED)
                             {
@@ -276,7 +254,7 @@ unsigned char io_event(unsigned char channel)
                                 }
                             }
 #endif // TARGET_NANOX
-                        });
+            });
         break;
     }
 
@@ -325,7 +303,7 @@ unsigned short io_exchange_al(unsigned char channel, unsigned short tx_len)
         else
         {
             return io_seproxyhal_spi_recv(G_io_apdu_buffer,
-                                          sizeof(G_io_apdu_buffer), 0);
+                sizeof(G_io_apdu_buffer), 0);
         }
 
     default:
@@ -360,7 +338,7 @@ void nv_app_state_init()
         storage.setting_3 = 0x00;
         storage.setting_4 = 0x00;
         storage.initialized = 0x01;
-        nvm_write((internalStorage_t *)&N_storage, (void *)&storage, sizeof(internalStorage_t));
+        nvm_write((internalStorage_t*)&N_storage, (void*)&storage, sizeof(internalStorage_t));
     }
     setting_1 = N_storage.setting_1;
     setting_2 = N_storage.setting_2;
