@@ -76,7 +76,7 @@ void handleApdu(volatile unsigned int* flags, volatile unsigned int* tx)
                 THROW(0x6D00);
                 break;
             case INS_SIGN_MTD:
-                THROW(0x6D00);
+                handleSignMetaData(G_io_apdu_buffer[OFFSET_P1], G_io_apdu_buffer[OFFSET_P2], G_io_apdu_buffer + OFFSET_CDATA, G_io_apdu_buffer[OFFSET_LC], flags, tx);
                 break;
             case INS_TRUST_DVC:
             if (trust_host == 0)

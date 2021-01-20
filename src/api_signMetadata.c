@@ -17,15 +17,15 @@ static uint8_t set_result_sign_meta()
 
 //////////////////////////////////////////////////////////////////////
 UX_STEP_NOCB(
-    ux_display_keyimg_flow_1_step,
+    ux_display_signmeta_flow_1_step,
     pnn,
     {
         &C_icon_warning,
-        "Gen",
-        "KeyImage?",
+        "Sign",
+        "Metadata?",
     });
 UX_STEP_VALID(
-    ux_display_keyimg_flow_2_step,
+    ux_display_signmeta_flow_2_step,
     pb,
     sendResponse(set_result_sign_meta(), true),
     {
@@ -33,7 +33,7 @@ UX_STEP_VALID(
         "Approve",
     });
 UX_STEP_VALID(
-    ux_display_keyimg_flow_3_step,
+    ux_display_signmeta_flow_3_step,
     pb,
     sendResponse(0, false),
     {
@@ -41,10 +41,10 @@ UX_STEP_VALID(
         "Reject",
     });
 
-UX_FLOW(ux_display_keyimg_flow,
-        &ux_display_keyimg_flow_1_step,
-        &ux_display_keyimg_flow_2_step,
-        &ux_display_keyimg_flow_3_step,
+UX_FLOW(ux_display_signmeta_flow,
+        &ux_display_signmeta_flow_1_step,
+        &ux_display_signmeta_flow_2_step,
+        &ux_display_signmeta_flow_3_step,
         FLOW_LOOP);
 
 void handleSignMetaData(uint8_t p1, uint8_t p2, uint8_t *dataBuffer, uint16_t dataLength, volatile unsigned int *flags, volatile unsigned int *tx)
@@ -52,21 +52,21 @@ void handleSignMetaData(uint8_t p1, uint8_t p2, uint8_t *dataBuffer, uint16_t da
     UNUSED(dataLength);
     UNUSED(p2);
     UNUSED(p1);
-    unsigned char kota[32];
-    unsigned char coin_pubkey[32];
-    unsigned char img[32];
-    os_memmove(kota, dataBuffer, 32);
-    incognito_addm(kota, kota, G_crypto_state_t.key.key);
+    // unsigned char kota[32];
+    // unsigned char coin_pubkey[32];
+    // unsigned char img[32];
+    // os_memmove(kota, dataBuffer, 32);
+    // incognito_addm(kota, kota, G_crypto_state_t.key.key);
 
-    os_memmove(coin_pubkey, dataBuffer + 32, 32);
+    // os_memmove(coin_pubkey, dataBuffer + 32, 32);
 
-    incognito_generate_key_image(img, coin_pubkey, kota);
+    // incognito_generate_key_image(img, coin_pubkey, kota);
 
-    os_memmove(processData, img, 32);
-    processData[33] = '\0';
+    // os_memmove(processData, img, 32);
+    // processData[33] = '\0';
     if (trust_host == 0)
     {
-        ux_flow_init(0, ux_display_keyimg_flow, NULL);
+        ux_flow_init(0, ux_display_signmeta_flow, NULL);
         *flags |= IO_ASYNCH_REPLY;
     }
 
