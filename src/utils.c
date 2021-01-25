@@ -124,57 +124,11 @@ unsigned int ui_prepro(const bagl_element_t *element)
 //     G_io_state_t.io_offset += len;
 // }
 
-const char alphabet[] = "123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz";
-#define alphabet_size (sizeof(alphabet) - 1)
-const unsigned int encoded_block_sizes[] = {0, 2, 3, 5, 6, 7, 9, 10, 11};
-#define FULL_BLOCK_SIZE 8          //(sizeof(encoded_block_sizes) / sizeof(encoded_block_sizes[0]) - 1)
-#define FULL_ENCODED_BLOCK_SIZE 11 // encoded_block_sizes[full_block_size];
+// const char alphabet[] = "123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz";
+// #define alphabet_size (sizeof(alphabet) - 1)
+// const unsigned int encoded_block_sizes[] = {0, 2, 3, 5, 6, 7, 9, 10, 11};
+// #define FULL_BLOCK_SIZE 8          //(sizeof(encoded_block_sizes) / sizeof(encoded_block_sizes[0]) - 1)
+// #define FULL_ENCODED_BLOCK_SIZE 11 // encoded_block_sizes[full_block_size];
 #define ADDR_CHECKSUM_SIZE 4
 #define ADDR_LEN 95
 #define INTEGRATED_ADDR_LEN 106
-
-static uint64_t uint_8be_to_64(const unsigned char *data, size_t size)
-{
-    uint64_t res = 0;
-    switch (9 - size)
-    {
-    case 1:
-        res |= *data++;
-    case 2:
-        res <<= 8;
-        res |= *data++;
-    case 3:
-        res <<= 8;
-        res |= *data++;
-    case 4:
-        res <<= 8;
-        res |= *data++;
-    case 5:
-        res <<= 8;
-        res |= *data++;
-    case 6:
-        res <<= 8;
-        res |= *data++;
-    case 7:
-        res <<= 8;
-        res |= *data++;
-    case 8:
-        res <<= 8;
-        res |= *data;
-        break;
-    }
-
-    return res;
-}
-
-void encode_block(const unsigned char *block, unsigned int size, char *res)
-{
-    uint64_t num = uint_8be_to_64(block, size);
-    int i = encoded_block_sizes[size];
-    while (i--)
-    {
-        uint64_t remainder = num % alphabet_size;
-        num /= alphabet_size;
-        res[i] = alphabet[remainder];
-    }
-}
