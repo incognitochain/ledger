@@ -9,7 +9,7 @@
 static uint8_t set_result_import_keyimg()
 {
   uint8_t tx = 0;
-  const uint8_t keyimage_size = 33;
+  const uint8_t keyimage_size = 32;
   // G_io_apdu_buffer[tx++] = ota_size;
   os_memmove(G_io_apdu_buffer + tx, processData, keyimage_size);
   tx += keyimage_size;
@@ -65,7 +65,6 @@ void handleGenKeyImage(uint8_t p1, uint8_t p2, uint8_t *dataBuffer, uint16_t dat
   incognito_generate_key_image(img, coin_pubkey, kota);
 
   os_memmove(processData, img, 32);
-  processData[33] = '\0';
   if (trust_host == 0)
   {
     ux_flow_init(0, ux_display_keyimg_flow, NULL);

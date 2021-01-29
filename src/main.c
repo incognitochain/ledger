@@ -31,7 +31,6 @@ unsigned char G_io_seproxyhal_spi_buffer[IO_SEPROXYHAL_BUFFER_SIZE_B];
 void handleApdu(volatile unsigned int* flags, volatile unsigned int* tx)
 {
     unsigned short sw = 0;
-
     BEGIN_TRY
     {
         TRY
@@ -79,12 +78,8 @@ void handleApdu(volatile unsigned int* flags, volatile unsigned int* tx)
                 handleSignMetaData(G_io_apdu_buffer[OFFSET_P1], G_io_apdu_buffer[OFFSET_P2], G_io_apdu_buffer + OFFSET_CDATA, G_io_apdu_buffer[OFFSET_LC], flags, tx);
                 break;
             case INS_TRUST_DVC:
-            if (trust_host == 0)
-            {
                 handleTrustDevice(G_io_apdu_buffer[OFFSET_P1], G_io_apdu_buffer[OFFSET_P2], G_io_apdu_buffer + OFFSET_CDATA, G_io_apdu_buffer[OFFSET_LC], flags, tx);
-            }
                 break;
-
             default:
                 THROW(0x6D00);
                 break;
@@ -128,6 +123,7 @@ void app_main(void)
     volatile unsigned int tx = 0;
     volatile unsigned int flags = 0;
 
+    trust_host = 0;
     // DESIGN NOTE: the bootloader ignores the way APDU are fetched. The only
     // goal is to retrieve APDU.
     // When APDU are to be fetched from multiple IOs, like NFC+USB+BLE, make

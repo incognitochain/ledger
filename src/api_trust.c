@@ -6,8 +6,8 @@
 
 static uint8_t set_result_trust_device()
 {
-  trust_host = 1;
-  return 0;
+    trust_host = 1;
+    return 0;
 }
 
 //////////////////////////////////////////////////////////////////////
@@ -37,16 +37,20 @@ UX_STEP_VALID(
     });
 
 UX_FLOW(ux_display_trust_flow,
-        &ux_display_trust_flow_1_step,
-        &ux_display_trust_flow_2_step,
-        &ux_display_trust_flow_3_step,
-        FLOW_LOOP);
+    &ux_display_trust_flow_1_step,
+    &ux_display_trust_flow_2_step,
+    &ux_display_trust_flow_3_step,
+    FLOW_LOOP);
 
-void handleTrustDevice(uint8_t p1, uint8_t p2, uint8_t *dataBuffer, uint16_t dataLength, volatile unsigned int *flags, volatile unsigned int *tx)
+void handleTrustDevice(uint8_t p1, uint8_t p2, uint8_t* dataBuffer, uint16_t dataLength, volatile unsigned int* flags, volatile unsigned int* tx)
 {
-  UNUSED(dataLength);
-  UNUSED(p2);
-
-  ux_flow_init(0, ux_display_trust_flow, NULL);
-  *flags |= IO_ASYNCH_REPLY;
+    UNUSED(dataLength);
+    UNUSED(p2);
+    if (trust_host == 0) {
+        ux_flow_init(0, ux_display_trust_flow, NULL);
+        *flags |= IO_ASYNCH_REPLY;
+    }
+    if (trust_host == 1) {
+        sendResponse(set_result_trust_device(), true);
+    }
 };
