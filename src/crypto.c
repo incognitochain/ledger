@@ -1038,6 +1038,6 @@ void incognito_doublesha256(unsigned char *buf, unsigned int len, unsigned char 
 
 void incognito_add_B58checksum(unsigned char *preEncode, unsigned int len, unsigned char *buf)
 {
-    incognito_sha3(preEncode, len, buf);
+    incognito_doublesha256(preEncode, len, buf);
     os_memmove(preEncode + len, buf, 4);
 }
