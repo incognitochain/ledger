@@ -148,4 +148,5 @@ void incognito_hash_to_scalar(unsigned char *scalar, unsigned char *raw, unsigne
 void incognito_hash_to_point(unsigned char *ec, unsigned char *ec_pub);
 void incognito_hash_to_ec(unsigned char *ec, unsigned char *ec_pub);
 void incognito_generate_key_image(unsigned char *img, unsigned char *P, unsigned char *x);
+void incognito_schnorr_sign(unsigned char *data, unsigned char *sig);
 #endif

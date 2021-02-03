@@ -1041,3 +1041,8 @@ void incognito_add_B58checksum(unsigned char *preEncode, unsigned int len, unsig
     incognito_doublesha256(preEncode, len, buf);
     os_memmove(preEncode + len, buf, 4);
 }
+
+void incognito_schnorr_sign(unsigned char *data, unsigned char *sig)
+{
+    
+}
