@@ -1,21 +1,3 @@
-/*****************************************************************************
- *   Ledger Monero App.
- *   (c) 2017-2020 Cedric Mesnil <cslashm@gmail.com>, Ledger SAS.
- *   (c) 2020 Ledger SAS.
- *
- *  Licensed under the Apache License, Version 2.0 (the "License");
- *  you may not use this file except in compliance with the License.
- *  You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- *  Unless required by applicable law or agreed to in writing, software
- *  distributed under the License is distributed on an "AS IS" BASIS,
- *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *  See the License for the specific language governing permissions and
- *  limitations under the License.
- *****************************************************************************/
-
 #include "os.h"
 #include "cx.h"
 
@@ -591,29 +573,29 @@ void incognito_derive_subaddress_public_key(unsigned char *x, unsigned char *pub
     incognito_ecsub(x, pub, scalarG);
 }
 
-/* ----------------------------------------------------------------------- */
-/* --- ok                                                              --- */
-/* ----------------------------------------------------------------------- */
-void incognito_get_subaddress_spend_public_key(unsigned char *x, unsigned char *index)
-{
-    // m = Hs(a || index_major || index_minor)
-    incognito_get_subaddress_secret_key(x, G_crypto_state_t.a, index);
-    // M = m*G
-    incognito_secret_key_to_public_key(x, x);
-    // D = B + M
-    incognito_ecadd(x, x, G_crypto_state_t.B);
-}
+// /* ----------------------------------------------------------------------- */
+// /* --- ok                                                              --- */
+// /* ----------------------------------------------------------------------- */
+// void incognito_get_subaddress_spend_public_key(unsigned char *x, unsigned char *index)
+// {
+//     // m = Hs(a || index_major || index_minor)
+//     incognito_get_subaddress_secret_key(x, G_crypto_state_t.a, index);
+//     // M = m*G
+//     incognito_secret_key_to_public_key(x, x);
+//     // D = B + M
+//     incognito_ecadd(x, x, G_crypto_state_t.B);
+// }
 
-/* ----------------------------------------------------------------------- */
-/* ---                                                                 --- */
-/* ----------------------------------------------------------------------- */
-void incognito_get_subaddress(unsigned char *C, unsigned char *D, unsigned char *index)
-{
-    // retrieve D
-    incognito_get_subaddress_spend_public_key(D, index);
-    // C = a*D
-    incognito_ecmul_k(C, D, G_crypto_state_t.a);
-}
+// /* ----------------------------------------------------------------------- */
+// /* ---                                                                 --- */
+// /* ----------------------------------------------------------------------- */
+// void incognito_get_subaddress(unsigned char *C, unsigned char *D, unsigned char *index)
+// {
+//     // retrieve D
+//     incognito_get_subaddress_spend_public_key(D, index);
+//     // C = a*D
+//     incognito_ecmul_k(C, D, G_crypto_state_t.a);
+// }
 
 /* ----------------------------------------------------------------------- */
 /* --- ok                                                              --- */
@@ -907,6 +889,14 @@ void incognito_rng_mod_order(unsigned char *r)
     incognito_reverse32(r, rnd + 8);
 }
 
+void incognito_rng_range(unsigned char *r, uint8_t *max)
+{
+    unsigned char rnd[32];
+    cx_rng(rnd, 32);
+    cx_math_modm(rnd, 32, (char *)max, 8);
+    // incognito_reverse32(r, rnd);
+}
+
 /* ----------------------------------------------------------------------- */
 /* ---                                                                 --- */
 /* ----------------------------------------------------------------------- */
@@ -1040,9 +1030,4 @@ void incognito_add_B58checksum(unsigned char *preEncode, unsigned int len, unsig
 {
     incognito_doublesha256(preEncode, len, buf);
     os_memmove(preEncode + len, buf, 4);
-}
-
-void incognito_schnorr_sign(unsigned char *data, unsigned char *sig)
-{
-    
 }

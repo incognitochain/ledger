@@ -37,20 +37,20 @@ int incognito_hash(unsigned int algo, cx_hash_t *hasher, unsigned char *buf, uns
 #define incognito_keccak_H(buf, len, out) \
     incognito_hash(CX_KECCAK, (cx_hash_t *)&G_crypto_state_t.keccakH, (buf), (len), (out))
 
-#define incognito_sha256_commitment_init() \
-    incognito_hash_init_sha256((cx_hash_t *)&G_crypto_state_t.sha256_commitment)
-#define incognito_sha256_commitment_update(buf, len) \
-    incognito_hash_update((cx_hash_t *)&G_crypto_state_t.sha256_commitment, (buf), (len))
-#define incognito_sha256_commitment_final(out)                             \
-    incognito_hash_final((cx_hash_t *)&G_crypto_state_t.sha256_commitment, \
-                         (out) ? (out) : G_crypto_state_t.C)
+// #define incognito_sha256_commitment_init() \
+//     incognito_hash_init_sha256((cx_hash_t *)&G_crypto_state_t.sha256_commitment)
+// #define incognito_sha256_commitment_update(buf, len) \
+//     incognito_hash_update((cx_hash_t *)&G_crypto_state_t.sha256_commitment, (buf), (len))
+// #define incognito_sha256_commitment_final(out)                             \
+//     incognito_hash_final((cx_hash_t *)&G_crypto_state_t.sha256_commitment, \
+//                          (out) ? (out) : G_crypto_state_t.C)
 
-#define incognito_sha256_outkeys_init() \
-    incognito_hash_init_sha256((cx_hash_t *)&G_crypto_state_t.sha256_out_keys)
-#define incognito_sha256_outkeys_update(buf, len) \
-    incognito_hash_update((cx_hash_t *)&G_crypto_state_t.sha256_out_keys, (buf), (len))
-#define incognito_sha256_outkeys_final(out) \
-    incognito_hash_final((cx_hash_t *)&G_crypto_state_t.sha256_out_keys, (out))
+// #define incognito_sha256_outkeys_init() \
+//     incognito_hash_init_sha256((cx_hash_t *)&G_crypto_state_t.sha256_out_keys)
+// #define incognito_sha256_outkeys_update(buf, len) \
+//     incognito_hash_update((cx_hash_t *)&G_crypto_state_t.sha256_out_keys, (buf), (len))
+// #define incognito_sha256_outkeys_final(out) \
+//     incognito_hash_final((cx_hash_t *)&G_crypto_state_t.sha256_out_keys, (out))
 
 /*
  *  check 1<s<N, else throw
@@ -141,6 +141,8 @@ void incognito_reduce(unsigned char *r, unsigned char *a);
 
 void incognito_rng_mod_order(unsigned char *r);
 
+void incognito_rng_range(unsigned char *r, uint8_t *max);
+
 void incognito_get_subaddress_secret_key(unsigned char *sub_s, unsigned char *s, unsigned char *index);
 void incognito_doublesha256(unsigned char *buf, unsigned int len, unsigned char *out);
 void incognito_add_B58checksum(unsigned char *preEncode, unsigned int len, unsigned char *buf);
@@ -148,5 +150,4 @@ void incognito_hash_to_scalar(unsigned char *scalar, unsigned char *raw, unsigne
 void incognito_hash_to_point(unsigned char *ec, unsigned char *ec_pub);
 void incognito_hash_to_ec(unsigned char *ec, unsigned char *ec_pub);
 void incognito_generate_key_image(unsigned char *img, unsigned char *P, unsigned char *x);
-void incognito_schnorr_sign(unsigned char *data, unsigned char *sig);
 #endif

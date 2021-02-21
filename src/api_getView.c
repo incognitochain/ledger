@@ -7,13 +7,13 @@
 
 static uint8_t set_result_get_view()
 {
-  uint8_t tx = 0;
-  const uint8_t view_size = 33;
-  // G_io_apdu_buffer[tx++] = view_size;
-  os_memmove(G_io_apdu_buffer + tx, processData, view_size);
-  tx += view_size;
-  os_memset(processData, 0, sizeof(processData));
-  return tx;
+    uint8_t tx = 0;
+    const uint8_t view_size = 33;
+    // G_io_apdu_buffer[tx++] = view_size;
+    os_memmove(G_io_apdu_buffer + tx, processData, view_size);
+    tx += view_size;
+    os_memset(processData, 0, sizeof(processData));
+    return tx;
 }
 
 //////////////////////////////////////////////////////////////////////
@@ -58,11 +58,14 @@ UX_FLOW(ux_display_view_flow,
 
 void handleGetView(uint8_t p1, uint8_t p2, uint8_t *dataBuffer, uint16_t dataLength, volatile unsigned int *flags, volatile unsigned int *tx)
 {
-  UNUSED(dataLength);
-  UNUSED(p2);
-  UNUSED(p1);
-  os_memmove(processData, G_crypto_state_t.a, 32);
-  processData[33] = '\0';
-  ux_flow_init(0, ux_display_view_flow, NULL);
-  *flags |= IO_ASYNCH_REPLY;
+    UNUSED(dataLength);
+    UNUSED(p2);
+    UNUSED(p1);
+
+    unsigned char key[32];
+    incognito_gen_private_view_key(key);
+    os_memmove(processData, key, 32);
+    processData[33] = '\0';
+    ux_flow_init(0, ux_display_view_flow, NULL);
+    *flags |= IO_ASYNCH_REPLY;
 }

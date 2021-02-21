@@ -16,8 +16,17 @@ unsigned char G_io_seproxyhal_spi_buffer[IO_SEPROXYHAL_BUFFER_SIZE_B];
 #define INS_GET_OTA 0x06
 #define INS_GET_VLD 0x07
 #define INS_KEY_IMG 0x10
-#define INS_GEN_RSIG 0x20
-#define INS_SIGN_MTD 0x21
+
+// gen ring sig cmds set
+// #define INS_RING_RST 0x20
+// #define INS_RING_PREP 0x21
+// #define INS_RING_GEN 0x22
+#define INS_GEN_ALPHA 0x21
+#define INS_CALC_C 0x22
+#define INS_CALC_R 0x23
+#define INS_COIN_PRIV 0x24
+
+#define INS_SIGN_SCHN 0x40
 
 #define INS_TRUST_DVC 0x60
 
@@ -28,7 +37,7 @@ unsigned char G_io_seproxyhal_spi_buffer[IO_SEPROXYHAL_BUFFER_SIZE_B];
 #define OFFSET_LC 4
 #define OFFSET_CDATA 5
 
-void handleApdu(volatile unsigned int* flags, volatile unsigned int* tx)
+void handleApdu(volatile unsigned int *flags, volatile unsigned int *tx)
 {
     unsigned short sw = 0;
     BEGIN_TRY
@@ -71,11 +80,29 @@ void handleApdu(volatile unsigned int* flags, volatile unsigned int* tx)
             case INS_KEY_IMG:
                 handleGenKeyImage(G_io_apdu_buffer[OFFSET_P1], G_io_apdu_buffer[OFFSET_P2], G_io_apdu_buffer + OFFSET_CDATA, G_io_apdu_buffer[OFFSET_LC], flags, tx);
                 break;
-            case INS_GEN_RSIG:
-                THROW(0x6D00);
+            // case INS_RING_RST:
+            //     handleResetRing(G_io_apdu_buffer[OFFSET_P1], G_io_apdu_buffer[OFFSET_P2], G_io_apdu_buffer + OFFSET_CDATA, G_io_apdu_buffer[OFFSET_LC], flags, tx);
+            //     break;
+            // case INS_RING_PREP:
+            //     handlePreprareRing(G_io_apdu_buffer[OFFSET_P1], G_io_apdu_buffer[OFFSET_P2], G_io_apdu_buffer + OFFSET_CDATA, G_io_apdu_buffer[OFFSET_LC], flags, tx);
+            //     break;
+            // case INS_RING_GEN:
+            //     handleGenRingSig(G_io_apdu_buffer[OFFSET_P1], G_io_apdu_buffer[OFFSET_P2], G_io_apdu_buffer + OFFSET_CDATA, G_io_apdu_buffer[OFFSET_LC], flags, tx);
+            //     break;
+            case INS_GEN_ALPHA:
+                handleGenAlpha(G_io_apdu_buffer[OFFSET_P1], G_io_apdu_buffer[OFFSET_P2], G_io_apdu_buffer + OFFSET_CDATA, G_io_apdu_buffer[OFFSET_LC], flags, tx);
                 break;
-            case INS_SIGN_MTD:
-                handleSignMetaData(G_io_apdu_buffer[OFFSET_P1], G_io_apdu_buffer[OFFSET_P2], G_io_apdu_buffer + OFFSET_CDATA, G_io_apdu_buffer[OFFSET_LC], flags, tx);
+            case INS_CALC_C:
+                handleCalculateC(G_io_apdu_buffer[OFFSET_P1], G_io_apdu_buffer[OFFSET_P2], G_io_apdu_buffer + OFFSET_CDATA, G_io_apdu_buffer[OFFSET_LC], flags, tx);
+                break;
+            case INS_CALC_R:
+                handleCalculateR(G_io_apdu_buffer[OFFSET_P1], G_io_apdu_buffer[OFFSET_P2], G_io_apdu_buffer + OFFSET_CDATA, G_io_apdu_buffer[OFFSET_LC], flags, tx);
+                break;
+            case INS_COIN_PRIV:
+                handleGenCoinPrivate(G_io_apdu_buffer[OFFSET_P1], G_io_apdu_buffer[OFFSET_P2], G_io_apdu_buffer + OFFSET_CDATA, G_io_apdu_buffer[OFFSET_LC], flags, tx);
+                break;
+            case INS_SIGN_SCHN:
+                handleSignSchnorr(G_io_apdu_buffer[OFFSET_P1], G_io_apdu_buffer[OFFSET_P2], G_io_apdu_buffer + OFFSET_CDATA, G_io_apdu_buffer[OFFSET_LC], flags, tx);
                 break;
             case INS_TRUST_DVC:
                 handleTrustDevice(G_io_apdu_buffer[OFFSET_P1], G_io_apdu_buffer[OFFSET_P2], G_io_apdu_buffer + OFFSET_CDATA, G_io_apdu_buffer[OFFSET_LC], flags, tx);
@@ -196,9 +223,9 @@ void app_main(void)
 }
 
 // override point, but nothing more to do
-void io_seproxyhal_display(const bagl_element_t* element)
+void io_seproxyhal_display(const bagl_element_t *element)
 {
-    io_seproxyhal_display_default((bagl_element_t*)element);
+    io_seproxyhal_display_default((bagl_element_t *)element);
 }
 
 unsigned char io_event(unsigned char channel)
@@ -237,7 +264,7 @@ unsigned char io_event(unsigned char channel)
 
     case SEPROXYHAL_TAG_TICKER_EVENT:
         UX_TICKER_EVENT(G_io_seproxyhal_spi_buffer,
-            {
+                        {
 #ifndef TARGET_NANOX
                             if (UX_ALLOWED)
                             {
@@ -250,7 +277,7 @@ unsigned char io_event(unsigned char channel)
                                 }
                             }
 #endif // TARGET_NANOX
-            });
+                        });
         break;
     }
 
@@ -299,7 +326,7 @@ unsigned short io_exchange_al(unsigned char channel, unsigned short tx_len)
         else
         {
             return io_seproxyhal_spi_recv(G_io_apdu_buffer,
-                sizeof(G_io_apdu_buffer), 0);
+                                          sizeof(G_io_apdu_buffer), 0);
         }
 
     default:
@@ -334,7 +361,7 @@ void nv_app_state_init()
         storage.setting_3 = 0x00;
         storage.setting_4 = 0x00;
         storage.initialized = 0x01;
-        nvm_write((internalStorage_t*)&N_storage, (void*)&storage, sizeof(internalStorage_t));
+        nvm_write((internalStorage_t *)&N_storage, (void *)&storage, sizeof(internalStorage_t));
     }
     setting_1 = N_storage.setting_1;
     setting_2 = N_storage.setting_2;

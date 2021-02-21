@@ -103,32 +103,6 @@ unsigned int ui_prepro(const bagl_element_t *element)
     }
     return display;
 }
-
-// /* ----------------------------------------------------------------------- */
-// /* INSERT data to be sent                                                  */
-// /* ----------------------------------------------------------------------- */
-
-// void incognito_io_hole(unsigned int sz) {
-//     if ((G_io_state_t.io_length + sz) > INCOGNITO_IO_BUFFER_LENGTH) {
-//         THROW(ERROR_IO_FULL);
-//     }
-//     os_memmove(G_io_state_t.io_buffer + G_io_state_t.io_offset + sz,
-//         G_io_state_t.io_buffer + G_io_state_t.io_offset,
-//         G_io_state_t.io_length - G_io_state_t.io_offset);
-//     G_io_state_t.io_length += sz;
-// }
-
-// void incognito_io_insert(unsigned char const* buff, unsigned int len) {
-//     incognito_io_hole(len);
-//     os_memmove(G_io_state_t.io_buffer + G_io_state_t.io_offset, buff, len);
-//     G_io_state_t.io_offset += len;
-// }
-
-// const char alphabet[] = "123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz";
-// #define alphabet_size (sizeof(alphabet) - 1)
-// const unsigned int encoded_block_sizes[] = {0, 2, 3, 5, 6, 7, 9, 10, 11};
-// #define FULL_BLOCK_SIZE 8          //(sizeof(encoded_block_sizes) / sizeof(encoded_block_sizes[0]) - 1)
-// #define FULL_ENCODED_BLOCK_SIZE 11 // encoded_block_sizes[full_block_size];
 #define ADDR_CHECKSUM_SIZE 4
 #define ADDR_LEN 95
 #define INTEGRATED_ADDR_LEN 106
