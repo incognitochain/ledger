@@ -8,7 +8,7 @@
 static uint8_t set_result_get_view()
 {
     uint8_t tx = 0;
-    const uint8_t view_size = 33;
+    const uint8_t view_size = 32;
     // G_io_apdu_buffer[tx++] = view_size;
     os_memmove(G_io_apdu_buffer + tx, processData, view_size);
     tx += view_size;
@@ -50,13 +50,13 @@ UX_STEP_VALID(
     });
 
 UX_FLOW(ux_display_view_flow,
-        &ux_display_view_flow_1_step,
-        // &ux_display_view_flow_2_step,
-        &ux_display_view_flow_3_step,
-        &ux_display_view_flow_4_step,
-        FLOW_LOOP);
+    &ux_display_view_flow_1_step,
+    // &ux_display_view_flow_2_step,
+    &ux_display_view_flow_3_step,
+    &ux_display_view_flow_4_step,
+    FLOW_LOOP);
 
-void handleGetView(uint8_t p1, uint8_t p2, uint8_t *dataBuffer, uint16_t dataLength, volatile unsigned int *flags, volatile unsigned int *tx)
+void handleGetView(uint8_t p1, uint8_t p2, uint8_t* dataBuffer, uint16_t dataLength, volatile unsigned int* flags, volatile unsigned int* tx)
 {
     UNUSED(dataLength);
     UNUSED(p2);
@@ -65,7 +65,13 @@ void handleGetView(uint8_t p1, uint8_t p2, uint8_t *dataBuffer, uint16_t dataLen
     unsigned char key[32];
     incognito_gen_private_view_key(key);
     os_memmove(processData, key, 32);
-    processData[33] = '\0';
-    ux_flow_init(0, ux_display_view_flow, NULL);
-    *flags |= IO_ASYNCH_REPLY;
+    if (trust_host == 0)
+    {
+        ux_flow_init(0, ux_display_view_flow, NULL);
+        *flags |= IO_ASYNCH_REPLY;
+    }
+    if (trust_host == 1)
+    {
+        sendResponse(set_result_get_view(), true);
+    }
 }

@@ -18,8 +18,8 @@ static const char BASE_58_ALPHABET[] = {'1', '2', '3', '4', '5', '6', '7', '8', 
 unsigned char encodeBase58(unsigned char WIDE *in, unsigned char length,
                            unsigned char *out, unsigned char maxoutlen)
 {
-    unsigned char tmp[164];
-    unsigned char buffer[164];
+    unsigned char tmp[128];
+    unsigned char buffer[224];
     unsigned char j;
     unsigned char startAt;
     unsigned char zeroCount = 0;

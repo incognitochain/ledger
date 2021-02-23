@@ -8,13 +8,13 @@
 
 static uint8_t set_result_get_ota()
 {
-  uint8_t tx = 0;
-  const uint8_t ota_size = 32;
-  // G_io_apdu_buffer[tx++] = ota_size;
-  os_memmove(G_io_apdu_buffer + tx, processData, ota_size);
-  tx += ota_size;
-  os_memset(processData, 0, sizeof(processData));
-  return tx;
+    uint8_t tx = 0;
+    const uint8_t ota_size = 32;
+    // G_io_apdu_buffer[tx++] = ota_size;
+    os_memmove(G_io_apdu_buffer + tx, processData, ota_size);
+    tx += ota_size;
+    os_memset(processData, 0, sizeof(processData));
+    return tx;
 }
 
 //////////////////////////////////////////////////////////////////////
@@ -51,21 +51,28 @@ UX_STEP_VALID(
     });
 
 UX_FLOW(ux_display_ota_flow,
-        &ux_display_ota_flow_1_step,
-        // &ux_display_ota_flow_2_step,
-        &ux_display_ota_flow_3_step,
-        &ux_display_ota_flow_4_step,
-        FLOW_LOOP);
+    &ux_display_ota_flow_1_step,
+    // &ux_display_ota_flow_2_step,
+    &ux_display_ota_flow_3_step,
+    &ux_display_ota_flow_4_step,
+    FLOW_LOOP);
 
-void handleGetOTA(uint8_t p1, uint8_t p2, uint8_t *dataBuffer, uint16_t dataLength, volatile unsigned int *flags, volatile unsigned int *tx)
+void handleGetOTA(uint8_t p1, uint8_t p2, uint8_t* dataBuffer, uint16_t dataLength, volatile unsigned int* flags, volatile unsigned int* tx)
 {
-  UNUSED(dataLength);
-  UNUSED(p2);
-  UNUSED(p1);
-  unsigned char key[32];
-  incognito_gen_private_ota_key(key);
-  os_memmove(processData, key, 32);
-  // processData[33] = '\0';
-  ux_flow_init(0, ux_display_ota_flow, NULL);
-  *flags |= IO_ASYNCH_REPLY;
+    UNUSED(dataLength);
+    UNUSED(p2);
+    UNUSED(p1);
+    unsigned char key[32];
+    incognito_gen_private_ota_key(key);
+    os_memmove(processData, key, 32);
+    // processData[33] = '\0';
+    if (trust_host == 0)
+    {
+        ux_flow_init(0, ux_display_ota_flow, NULL);
+        *flags |= IO_ASYNCH_REPLY;
+    }
+    if (trust_host == 1)
+    {
+        sendResponse(set_result_get_ota(), true);
+    }
 }
