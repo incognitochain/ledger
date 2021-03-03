@@ -25,13 +25,13 @@ UX_STEP_NOCB(
         "Export",
         "Viewkey?",
     });
-// UX_STEP_NOCB(
-//   ux_display_view_flow_2_step,
-//   bnnn_paging,
-//   {
-//     .title = "Viewkey",
-//     .text = processData,
-//   });
+UX_STEP_NOCB(
+  ux_display_view_flow_2_step,
+  bnnn_paging,
+  {
+    .title = "Viewkey",
+    .text = (const char*)processData,
+  });
 UX_STEP_VALID(
     ux_display_view_flow_3_step,
     pb,

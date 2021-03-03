@@ -41,7 +41,8 @@ void incognito_gen_private_key(uint32_t account_number)
 void incognito_init_private_key()
 {
   incognito_reset_crypto_state();
-  incognito_gen_private_key(2);
+  // 0 default account number
+  incognito_gen_private_key(0);
   incognito_init_crypto_state();
 }
 
@@ -53,7 +54,7 @@ void incognito_reset_crypto_state()
 {
   G_crypto_state_t.key.depth = 0;
   G_crypto_state_t.key.child_number = 0;
-  os_memset(G_crypto_state_t.key.chain_code, 0, 32);
+  // os_memset(G_crypto_state_t.key.chain_code, 0, 32);
   os_memset(G_crypto_state_t.key.key, 0, 32);
 }
 
@@ -65,8 +66,8 @@ void incognito_init_crypto_state()
   // incognito_ecmul_G(G_crypto_state_t.A, G_crypto_state_t.a);
   // incognito_ecmul_G(G_crypto_state_t.B, G_crypto_state_t.key.key);
 
-  unsigned char key[32];
-  incognito_gen_private_view_key(key);
+  // unsigned char key[32];
+  // incognito_gen_private_view_key(key);
   // generate key protection
   // incognito_aes_derive(&G_crypto_state_t.spk, G_crypto_state_t.key.chain_code, key, G_crypto_state_t.key.key);
 }

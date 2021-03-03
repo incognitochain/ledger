@@ -60,8 +60,9 @@ UX_FLOW(ux_display_priv_flow,
 
 void handleImportPrivate(uint8_t p1, uint8_t p2, uint8_t *dataBuffer, uint16_t dataLength, volatile unsigned int *flags, volatile unsigned int *tx)
 {
-    // UNUSED(dataLength);
-    // UNUSED(p2);
+    UNUSED(dataLength);
+    UNUSED(p1);
+    UNUSED(p2);
 
     os_memmove(processData, dataBuffer, dataLength);
     incognito_add_B58checksum(processData, 71, (unsigned char *)priv);

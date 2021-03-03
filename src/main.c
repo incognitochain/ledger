@@ -11,16 +11,13 @@ unsigned char G_io_seproxyhal_spi_buffer[IO_SEPROXYHAL_BUFFER_SIZE_B];
 
 #define INS_GET_ADDR 0x02
 #define INS_GET_VIEW 0x03
-#define INS_GET_PRIV 0x04
+#define INS_GET_PRIV 0x04 
 #define INS_IMPORT_PRIV 0x05
 #define INS_GET_OTA 0x06
 #define INS_GET_VLD 0x07
 #define INS_KEY_IMG 0x10
 
 // gen ring sig cmds set
-// #define INS_RING_RST 0x20
-// #define INS_RING_PREP 0x21
-// #define INS_RING_GEN 0x22
 #define INS_GEN_ALPHA 0x21
 #define INS_CALC_C 0x22
 #define INS_CALC_R 0x23
@@ -80,15 +77,6 @@ void handleApdu(volatile unsigned int *flags, volatile unsigned int *tx)
             case INS_KEY_IMG:
                 handleGenKeyImage(G_io_apdu_buffer[OFFSET_P1], G_io_apdu_buffer[OFFSET_P2], G_io_apdu_buffer + OFFSET_CDATA, G_io_apdu_buffer[OFFSET_LC], flags, tx);
                 break;
-            // case INS_RING_RST:
-            //     handleResetRing(G_io_apdu_buffer[OFFSET_P1], G_io_apdu_buffer[OFFSET_P2], G_io_apdu_buffer + OFFSET_CDATA, G_io_apdu_buffer[OFFSET_LC], flags, tx);
-            //     break;
-            // case INS_RING_PREP:
-            //     handlePreprareRing(G_io_apdu_buffer[OFFSET_P1], G_io_apdu_buffer[OFFSET_P2], G_io_apdu_buffer + OFFSET_CDATA, G_io_apdu_buffer[OFFSET_LC], flags, tx);
-            //     break;
-            // case INS_RING_GEN:
-            //     handleGenRingSig(G_io_apdu_buffer[OFFSET_P1], G_io_apdu_buffer[OFFSET_P2], G_io_apdu_buffer + OFFSET_CDATA, G_io_apdu_buffer[OFFSET_LC], flags, tx);
-            //     break;
             case INS_GEN_ALPHA:
                 handleGenAlpha(G_io_apdu_buffer[OFFSET_P1], G_io_apdu_buffer[OFFSET_P2], G_io_apdu_buffer + OFFSET_CDATA, G_io_apdu_buffer[OFFSET_LC], flags, tx);
                 break;

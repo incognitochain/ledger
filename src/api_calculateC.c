@@ -16,10 +16,9 @@ static uint8_t set_result_calculate_c(uint8_t size)
 }
 
 //calculate c
-void handleCalculateC(uint8_t p1, uint8_t p2, uint8_t *dataBuffer, uint16_t dataLength, volatile unsigned int *flags, volatile unsigned int *tx)
+void handleCalculateC(uint8_t p1, uint8_t p2, uint8_t* dataBuffer, uint16_t dataLength, volatile unsigned int* flags, volatile unsigned int* tx)
 {
-    // UNUSED(p1);
-
+    UNUSED(dataLength);
     unsigned char alphaG[32];
     unsigned char alpha[32];
     if (p1 == 0)

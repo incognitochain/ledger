@@ -38,7 +38,7 @@ extern const internalStorage_t N_storage_real;
 
 struct crypto_state_s
 {
-    uint8_t isHDGen;
+    
     privatekey_t key;
 
     // unsigned char a[32]; //private view key //this should be cal when needed?
@@ -69,11 +69,9 @@ struct crypto_state_s
     // unsigned char C[32];
 
     // for ring sig
-    // unsigned char message[32];
     unsigned char coinPrivateKey[256];
     unsigned char alpha[288];
 
-    // unsigned char free[224];
 };
 
 typedef struct crypto_state_s crypto_state_t;

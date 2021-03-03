@@ -23,9 +23,9 @@ int getPublicKey(uint32_t accountNumber, uint8_t *publicKeyArray, unsigned char 
 
 uint32_t readUint32BE(uint8_t *buffer);
 
-void getPrivateKey(uint32_t accountNumber, cx_ecfp_private_key_t *privateKey);
-
 void sendResponse(uint8_t tx, bool approve);
+
+void sendUnauthorized();
 
 void encode_block(const unsigned char *block, unsigned int size, char *res);
 

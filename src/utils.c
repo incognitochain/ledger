@@ -83,6 +83,14 @@ void sendResponse(uint8_t tx, bool approve)
     ui_idle();
 }
 
+void sendUnauthorized() 
+{
+    G_io_apdu_buffer[0] = 0x69;
+    G_io_apdu_buffer[1] = 0x85;
+    io_exchange(CHANNEL_APDU | IO_RETURN_AFTER_TX, 2);
+    ui_idle();
+}
+
 unsigned int ui_prepro(const bagl_element_t *element)
 {
     unsigned int display = 1;
