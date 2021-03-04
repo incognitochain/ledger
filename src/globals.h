@@ -40,33 +40,8 @@ struct crypto_state_s
 {
     
     privatekey_t key;
-
-    // unsigned char a[32]; //private view key //this should be cal when needed?
-
-    // unsigned char A[32]; //public view key/transmission key //this should be cal when needed?
-    // unsigned char B[32]; //public spend key //this should be cal when needed?
-    /* SPK */
-    // cx_aes_key_t spk;
-    // unsigned char hmac_key[32];
-
-    /* Tx key */
-    // unsigned char R[32];
-    // unsigned char r[32];
-
-    /* prefix/mlsag hash */
     cx_sha3_t keccakF;
     cx_sha3_t keccakH;
-    // cx_sha3_t sha3;
-    // unsigned char prefixH[32];
-    // unsigned char mlsagH[32];
-    // unsigned char c[32];
-
-    /* -- track tx-in/out and commitment -- */
-    // cx_sha256_t sha256_out_keys;
-    // unsigned char OUTK[32];
-
-    // cx_sha256_t sha256_commitment;
-    // unsigned char C[32];
 
     // for ring sig
     unsigned char coinPrivateKey[256];

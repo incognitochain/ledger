@@ -42,7 +42,7 @@ void incognito_init_private_key()
 {
   incognito_reset_crypto_state();
   // 0 default account number
-  incognito_gen_private_key(0);
+  incognito_gen_private_key(2);
   incognito_init_crypto_state();
 }
 
