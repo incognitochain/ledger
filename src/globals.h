@@ -38,10 +38,13 @@ extern const internalStorage_t N_storage_real;
 
 struct crypto_state_s
 {
-    
     privatekey_t key;
+
+    union keccakunion
+    {
     cx_sha3_t keccakF;
     cx_sha3_t keccakH;
+    } KU;
 
     // for ring sig
     unsigned char coinPrivateKey[256];
@@ -53,12 +56,4 @@ typedef struct crypto_state_s crypto_state_t;
 extern crypto_state_t G_crypto_state_t;
 
 #define INCOGNITO_IO_BUFFER_LENGTH (300)
-// struct io_state_s {
-//     unsigned short io_length;
-//     unsigned short io_offset;
-//     unsigned char io_buffer[INCOGNITO_IO_BUFFER_LENGTH];
-//     };
-
-// typedef struct io_state_s io_state_t;
-// extern  io_state_t G_io_state_t;
 #endif

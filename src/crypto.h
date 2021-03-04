@@ -16,26 +16,26 @@ int incognito_hash_final(cx_hash_t *hasher, unsigned char *out);
 int incognito_hash(unsigned int algo, cx_hash_t *hasher, unsigned char *buf, unsigned int len,
                    unsigned char *out);
 
-#define incognito_sha3_init() incognito_hash_init_sha3((cx_hash_t *)&G_crypto_state_t.keccakF)
+#define incognito_sha3_init() incognito_hash_init_sha3((cx_hash_t *)&G_crypto_state_t.KU.keccakF)
 #define incognito_sha3_update(buf, len) \
-    incognito_hash_update((cx_hash_t *)&G_crypto_state_t.keccakF, (buf), (len))
-#define incognito_sha3_final(out) incognito_hash_final((cx_hash_t *)&G_crypto_state_t.keccakF, (out))
+    incognito_hash_update((cx_hash_t *)&G_crypto_state_t.KU.keccakF, (buf), (len))
+#define incognito_sha3_final(out) incognito_hash_final((cx_hash_t *)&G_crypto_state_t.KU.keccakF, (out))
 #define incognito_sha3(buf, len, out) \
-    incognito_hash(CX_SHA3, (cx_hash_t *)&G_crypto_state_t.keccakF, (buf), (len), (out))
+    incognito_hash(CX_SHA3, (cx_hash_t *)&G_crypto_state_t.KU.keccakF, (buf), (len), (out))
 
-#define incognito_keccak_init_F() incognito_hash_init_keccak((cx_hash_t *)&G_crypto_state_t.keccakF)
+#define incognito_keccak_init_F() incognito_hash_init_keccak((cx_hash_t *)&G_crypto_state_t.KU.keccakF)
 #define incognito_keccak_update_F(buf, len) \
-    incognito_hash_update((cx_hash_t *)&G_crypto_state_t.keccakF, (buf), (len))
-#define incognito_keccak_final_F(out) incognito_hash_final((cx_hash_t *)&G_crypto_state_t.keccakF, (out))
+    incognito_hash_update((cx_hash_t *)&G_crypto_state_t.KU.keccakF, (buf), (len))
+#define incognito_keccak_final_F(out) incognito_hash_final((cx_hash_t *)&G_crypto_state_t.KU.keccakF, (out))
 #define incognito_keccak_F(buf, len, out) \
-    incognito_hash(CX_KECCAK, (cx_hash_t *)&G_crypto_state_t.keccakF, (buf), (len), (out))
+    incognito_hash(CX_KECCAK, (cx_hash_t *)&G_crypto_state_t.KU.keccakF, (buf), (len), (out))
 
-#define incognito_keccak_init_H() incognito_hash_init_keccak((cx_hash_t *)&G_crypto_state_t.keccakH)
+#define incognito_keccak_init_H() incognito_hash_init_keccak((cx_hash_t *)&G_crypto_state_t.KU.keccakH)
 #define incognito_keccak_update_H(buf, len) \
-    incognito_hash_update((cx_hash_t *)&G_crypto_state_t.keccakH, (buf), (len))
-#define incognito_keccak_final_H(out) incognito_hash_final((cx_hash_t *)&G_crypto_state_t.keccakH, (out))
+    incognito_hash_update((cx_hash_t *)&G_crypto_state_t.KU.keccakH, (buf), (len))
+#define incognito_keccak_final_H(out) incognito_hash_final((cx_hash_t *)&G_crypto_state_t.KU.keccakH, (out))
 #define incognito_keccak_H(buf, len, out) \
-    incognito_hash(CX_KECCAK, (cx_hash_t *)&G_crypto_state_t.keccakH, (buf), (len), (out))
+    incognito_hash(CX_KECCAK, (cx_hash_t *)&G_crypto_state_t.KU.keccakH, (buf), (len), (out))
 
 // #define incognito_sha256_commitment_init() \
 //     incognito_hash_init_sha256((cx_hash_t *)&G_crypto_state_t.sha256_commitment)

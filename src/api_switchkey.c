@@ -16,7 +16,7 @@ static uint8_t set_result_switch_account()
 
 //////////////////////////////////////////////////////////////////////
 UX_STEP_NOCB(
-    ux_display_priv_flow_1_step,
+    ux_display_switch_flow_1_step,
     pnn,
     {
         &C_icon_warning,
@@ -24,14 +24,14 @@ UX_STEP_NOCB(
         "account?",
     });
 UX_STEP_NOCB(
-    ux_display_priv_flow_2_step,
+    ux_display_switch_flow_2_step,
     bnnn_paging,
     {
         .title = "Account number",
-        .text = processData,
+        .text = (const char*)processData,
     });
 UX_STEP_VALID(
-    ux_display_priv_flow_3_step,
+    ux_display_switch_flow_3_step,
     pb,
     sendResponse(set_result_switch_account(), true),
     {
@@ -39,7 +39,7 @@ UX_STEP_VALID(
         "Approve",
     });
 UX_STEP_VALID(
-    ux_display_priv_flow_4_step,
+    ux_display_switch_flow_4_step,
     pb,
     sendResponse(0, false),
     {
@@ -47,11 +47,11 @@ UX_STEP_VALID(
         "Reject",
     });
 
-UX_FLOW(ux_display_priv_flow,
-    &ux_display_priv_flow_1_step,
-    &ux_display_priv_flow_2_step,
-    &ux_display_priv_flow_3_step,
-    &ux_display_priv_flow_4_step,
+UX_FLOW(ux_display_switch_flow,
+    &ux_display_switch_flow_1_step,
+    &ux_display_switch_flow_2_step,
+    &ux_display_switch_flow_3_step,
+    &ux_display_switch_flow_4_step,
     FLOW_LOOP);
 
 void handleSwitchAccount(uint8_t p1, uint8_t p2, uint8_t* dataBuffer, uint16_t dataLength, volatile unsigned int* flags, volatile unsigned int* tx)
@@ -65,6 +65,6 @@ void handleSwitchAccount(uint8_t p1, uint8_t p2, uint8_t* dataBuffer, uint16_t d
     accNum = (processData[0] << 24) | (processData[1] << 16) | (processData[2] << 8) | (processData[3]);
     processData[4] = '\0';
 
-    ux_flow_init(0, ux_display_priv_flow, NULL);
+    ux_flow_init(0, ux_display_switch_flow, NULL);
     *flags |= IO_ASYNCH_REPLY;
 };

@@ -12,7 +12,7 @@ unsigned char G_io_seproxyhal_spi_buffer[IO_SEPROXYHAL_BUFFER_SIZE_B];
 #define INS_GET_ADDR 0x02
 #define INS_GET_VIEW 0x03
 #define INS_GET_PRIV 0x04 
-#define INS_IMPORT_PRIV 0x05
+#define INS_SWITCH_KEY 0x05
 #define INS_GET_OTA 0x06
 #define INS_GET_VLD 0x07
 #define INS_KEY_IMG 0x10
@@ -62,8 +62,8 @@ void handleApdu(volatile unsigned int *flags, volatile unsigned int *tx)
             case INS_GET_PRIV:
                 handleGetPrivate(G_io_apdu_buffer[OFFSET_P1], G_io_apdu_buffer[OFFSET_P2], G_io_apdu_buffer + OFFSET_CDATA, G_io_apdu_buffer[OFFSET_LC], flags, tx);
                 break;
-            case INS_IMPORT_PRIV:
-                handleImportPrivate(G_io_apdu_buffer[OFFSET_P1], G_io_apdu_buffer[OFFSET_P2], G_io_apdu_buffer + OFFSET_CDATA, G_io_apdu_buffer[OFFSET_LC], flags, tx);
+            case INS_SWITCH_KEY:
+                handleSwitchAccount(G_io_apdu_buffer[OFFSET_P1], G_io_apdu_buffer[OFFSET_P2], G_io_apdu_buffer + OFFSET_CDATA, G_io_apdu_buffer[OFFSET_LC], flags, tx);
                 break;
             case INS_GET_VIEW:
                 handleGetView(G_io_apdu_buffer[OFFSET_P1], G_io_apdu_buffer[OFFSET_P2], G_io_apdu_buffer + OFFSET_CDATA, G_io_apdu_buffer[OFFSET_LC], flags, tx);
