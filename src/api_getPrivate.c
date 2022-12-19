@@ -6,6 +6,8 @@
 #include "globals.h"
 #include "crypto.h"
 
+
+// Only use for debugging purposes
 // static char private[123];
 static uint8_t set_result_get_private()
 {

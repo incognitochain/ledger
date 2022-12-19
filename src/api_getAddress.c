@@ -94,14 +94,13 @@ void handleGetAddress(uint8_t p1, uint8_t p2, uint8_t* dataBuffer, uint16_t data
     os_memset(buffer, 0, 32);
     incognito_add_B58checksum(base58check, 105, buffer);
     ADDRESS_LENGTH = encodeBase58(base58check, 109, (unsigned char*)processData, 255);
-    if (trust_host == 0)
-    {
-        ux_flow_init(0, ux_display_public_flow, NULL);
-        *flags |= IO_ASYNCH_REPLY;
-    }
-    if (trust_host == 1)
+    // if (trust_host == 0)
+    // {
+    //     ux_flow_init(0, ux_display_public_flow, NULL);
+    //     *flags |= IO_ASYNCH_REPLY;
+    // }
+    if (true) // (trust_host == 1)
     {
         sendResponse(set_result_get_address(), true);
     }
-    
 }
