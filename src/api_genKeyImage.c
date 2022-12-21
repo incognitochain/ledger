@@ -23,8 +23,8 @@ UX_STEP_NOCB(
     pnn,
     {
         &C_icon_warning,
-        "Gen",
-        "KeyImage?",
+        "Calculate",
+        "Key Image?",
     });
 UX_STEP_VALID(
     ux_display_keyimg_flow_2_step,

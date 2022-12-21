@@ -15,6 +15,38 @@ static uint8_t set_result_calculate_r()
     return tx;
 }
 
+//////////////////////////////////////////////////////////////////////
+UX_STEP_NOCB(
+    ux_display_calculate_R_1_step,
+    pnn,
+    {
+        &C_icon_warning,
+        "Trust",
+        "this device?",
+    });
+UX_STEP_VALID(
+    ux_display_calculate_R_2_step,
+    pb,
+    sendResponse(set_result_calculate_r(), true),
+    {
+        &C_icon_validate_14,
+        "Approve",
+    });
+UX_STEP_VALID(
+    ux_display_calculate_R_3_step,
+    pb,
+    sendResponse(0, false),
+    {
+        &C_icon_crossmark,
+        "Reject",
+    });
+
+UX_FLOW(ux_display_calculate_R,
+    &ux_display_calculate_R_1_step,
+    &ux_display_calculate_R_2_step,
+    &ux_display_calculate_R_3_step,
+    FLOW_LOOP);
+
 //calculate r
 void handleCalculateR(uint8_t p1, uint8_t p2, uint8_t* dataBuffer, uint16_t dataLength, volatile unsigned int* flags, volatile unsigned int* tx)
 {
@@ -32,5 +64,15 @@ void handleCalculateR(uint8_t p1, uint8_t p2, uint8_t* dataBuffer, uint16_t data
     incognito_multm(ck, c, coinPrivate);
     incognito_subm(result, alpha, ck);
     os_memmove(processData, result, 32);
-    sendResponse(set_result_calculate_r(), true);
+
+    if (trust_host == 0)
+    {
+        ux_flow_init(0, ux_display_calculate_R, NULL);
+        *flags |= IO_ASYNCH_REPLY;
+    }
+
+    if (trust_host == 1)
+    {
+        sendResponse(set_result_calculate_r(), true);
+    }
 }

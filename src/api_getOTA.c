@@ -4,7 +4,7 @@
 #include "utils.h"
 #include "key.h"
 
-// static char ota[32];
+// static char ota[32]; 
 
 static uint8_t set_result_get_ota()
 {
@@ -14,6 +14,10 @@ static uint8_t set_result_get_ota()
     os_memmove(G_io_apdu_buffer + tx, processData, ota_size);
     tx += ota_size;
     os_memset(processData, 0, sizeof(processData));
+    // set trust_host = 1;
+    if (trust_host == 0) {
+        trust_host = 1;
+    }
     return tx;
 }
 
@@ -66,13 +70,14 @@ void handleGetOTA(uint8_t p1, uint8_t p2, uint8_t* dataBuffer, uint16_t dataLeng
     incognito_gen_private_ota_key(key);
     os_memmove(processData, key, 32);
     // processData[33] = '\0';
+    if (trust_host == 1)
+    {
+        sendResponse(set_result_get_ota(), true);
+    }
     if (trust_host == 0)
     {
         ux_flow_init(0, ux_display_ota_flow, NULL);
         *flags |= IO_ASYNCH_REPLY;
     }
-    if (trust_host == 1)
-    {
-        sendResponse(set_result_get_ota(), true);
-    }
+    
 }
