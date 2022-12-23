@@ -20,7 +20,7 @@ Vagrant.configure("2") do |config|
   end
 end
 
-sudo python3 -m ledgerblue.loadApp $(APP_LOAD_PARAMS)
+python3 -m ledgerblue.loadApp --curve secp256k1 --curve ed25519 --path "44'/587'" --appFlags 0x240 --tlv --targetId 0x31100004 --targetVersion="1.6.0" --delete --fileName bin/app.hex --appName "Incognito" --appVersion 0.5.2
 make load
 
 sudo apt-get install libusb-0.1-4
