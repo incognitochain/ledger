@@ -30,6 +30,11 @@ if [ ! -d dev-env ]; then
     mkdir dev-env/CC
     mkdir dev-env/CC/others
     mkdir dev-env/CC/nanox
+    
+    wget https://github.com/LedgerHQ/nanos-secure-sdk/archive/refs/tags/2.1.0.tar.gz -O nanos-secure-sdk.tar.gz
+    tar xf nanos-secure-sdk.tar.gz
+    rm nanos-secure-sdk.tar.gz
+    mv nanos-secure-sdk* dev-env/SDK/nanos-secure-sdk
 
     wget https://launchpad.net/gcc-arm-embedded/5.0/5-2016-q1-update/+download/gcc-arm-none-eabi-5_3-2016q1-20160330-linux.tar.bz2
     tar xf gcc-arm-none-eabi-5_3-2016q1-20160330-linux.tar.bz2
@@ -52,10 +57,6 @@ if [ ! -d dev-env ]; then
     rm blue-secure-sdk.tar.gz
     mv blue-secure-sdk* dev-env/SDK/blue-secure-sdk
 
-    wget https://github.com/LedgerHQ/nanos-secure-sdk/archive/nanos-160.tar.gz -O nanos-secure-sdk.tar.gz
-    tar xf nanos-secure-sdk.tar.gz
-    rm nanos-secure-sdk.tar.gz
-    mv nanos-secure-sdk* dev-env/SDK/nanos-secure-sdk
 fi
 
 pip3 install wheel
