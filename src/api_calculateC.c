@@ -45,3 +45,34 @@ void handleCalculateC(uint8_t p1, uint8_t p2, uint8_t* dataBuffer, uint16_t data
         sendResponse(set_result_calculate_c(32), true);
     }
 }
+
+//calculate c-ca
+void handleCalculateCCA(uint8_t p1, uint8_t p2, uint8_t* dataBuffer, uint16_t dataLength, volatile unsigned int* flags, volatile unsigned int* tx)
+{
+    UNUSED(dataLength);
+    unsigned char alphaG[32];
+    unsigned char alphaToken[32];
+    if (p1 == 0)
+    {
+        unsigned char alphaH[32];
+        unsigned char H[32];
+        os_memmove(alphaToken, G_crypto_state_t.alphaToken + (p2 * 32), 32);
+        incognito_ecmul_G(alphaG, alphaToken);
+        os_memmove(H, dataBuffer, 32);
+        incognito_hash_to_point(H, H);
+        incognito_ecmul_k(alphaH, H, alphaToken);
+
+        os_memmove(processData, alphaG, 32);
+        os_memmove(processData + 32, alphaH, 32);
+        sendResponse(set_result_calculate_c(64), true);
+    }
+    else
+    {
+        unsigned char pedComG[32];
+        os_memmove(alphaToken, G_crypto_state_t.alphaToken + (p2 * 32), 32);
+        os_memmove(pedComG, dataBuffer, 32);
+        incognito_ecmul_k(alphaG, pedComG, alphaToken);
+        os_memmove(processData, alphaG, 32);
+        sendResponse(set_result_calculate_c(32), true);
+    }
+}

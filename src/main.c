@@ -25,6 +25,7 @@ unsigned char G_io_seproxyhal_spi_buffer[IO_SEPROXYHAL_BUFFER_SIZE_B];
 #define INS_SET_ALPHA 0x25
 #define INS_GET_ALPHA 0x26
 #define INS_DECRYPT_COIN 0x27
+#define INS_CALC_CCA 0x28
 
 #define INS_SIGN_SCHN 0x40
 
@@ -93,6 +94,9 @@ void handleApdu(volatile unsigned int *flags, volatile unsigned int *tx)
                 break;
             case INS_CALC_C:
                 handleCalculateC(G_io_apdu_buffer[OFFSET_P1], G_io_apdu_buffer[OFFSET_P2], G_io_apdu_buffer + OFFSET_CDATA, G_io_apdu_buffer[OFFSET_LC], flags, tx);
+                break;
+            case INS_CALC_CCA:
+                handleCalculateCCA(G_io_apdu_buffer[OFFSET_P1], G_io_apdu_buffer[OFFSET_P2], G_io_apdu_buffer + OFFSET_CDATA, G_io_apdu_buffer[OFFSET_LC], flags, tx);
                 break;
             case INS_CALC_R:
                 handleCalculateR(G_io_apdu_buffer[OFFSET_P1], G_io_apdu_buffer[OFFSET_P2], G_io_apdu_buffer + OFFSET_CDATA, G_io_apdu_buffer[OFFSET_LC], flags, tx);
