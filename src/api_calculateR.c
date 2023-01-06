@@ -21,8 +21,8 @@ UX_STEP_NOCB(
     pnn,
     {
         &C_icon_warning,
-        "Trust",
-        "this device?",
+        "Comfirm",
+        "transaction?",
     });
 UX_STEP_VALID(
     ux_display_calculate_R_2_step,
