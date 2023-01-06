@@ -51,7 +51,6 @@ UX_FLOW(ux_display_calculate_R,
 void handleCalculateR(uint8_t p1, uint8_t p2, uint8_t* dataBuffer, uint16_t dataLength, volatile unsigned int* flags, volatile unsigned int* tx)
 {
     UNUSED(dataLength);
-    UNUSED(p1);
     unsigned char c[32];
     unsigned char alpha[32];
     unsigned char coinPrivate[32];
@@ -73,6 +72,12 @@ void handleCalculateR(uint8_t p1, uint8_t p2, uint8_t* dataBuffer, uint16_t data
 
     if (trust_host == 1)
     {
-        sendResponse(set_result_calculate_r(), true);
+        if (p2 == 0 && p1 == 0) {
+            ux_flow_init(0, ux_display_calculate_R, NULL);
+            *flags |= IO_ASYNCH_REPLY;
+        } 
+        else {
+            sendResponse(set_result_calculate_r(), true);
+        }
     }
 }

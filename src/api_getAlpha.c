@@ -20,14 +20,23 @@ static uint8_t set_result_get_alpha()
 void handleGetAlpha(uint8_t p1, uint8_t p2, uint8_t* dataBuffer, uint16_t dataLength, volatile unsigned int* flags, volatile unsigned int* tx)
 {
     UNUSED(dataLength);
-    UNUSED(p2);
 
     unsigned char alpha[32];
-
-    os_memset(processData, 0, sizeof(processData));
-    os_memmove(alpha, G_crypto_state_t.alpha + (p1 * 32), 32);
-    os_memmove(processData, alpha, 32);
-    sendResponse(set_result_get_alpha(), true);
+    unsigned char alphaToken[32];
+    if (p2 == 0)
+    {
+        os_memset(processData, 0, sizeof(processData));
+        os_memmove(alpha, G_crypto_state_t.alpha + (p1 * 32), 32);
+        os_memmove(processData, alpha, 32);
+    }
+    else 
+    {
+        os_memset(processData, 0, sizeof(processData));
+        os_memmove(alphaToken, G_crypto_state_t.alphaToken + (p1 * 32), 32);
+        os_memmove(processData, alphaToken, 32);
+    }
+    
+    
     // if (trust_host == 0)
     // {
     //     ux_flow_init(0, ux_display_public_flow, NULL);

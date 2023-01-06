@@ -49,7 +49,7 @@ struct crypto_state_s
     // for ring sig
     unsigned char coinPrivateKey[256];
     unsigned char alpha[288];
-
+    unsigned char alphaToken[288];
 };
 
 typedef struct crypto_state_s crypto_state_t;
