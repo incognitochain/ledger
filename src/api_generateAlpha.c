@@ -8,8 +8,6 @@
 void handleGenAlpha(uint8_t p1, uint8_t p2, uint8_t *dataBuffer, uint16_t dataLength, volatile unsigned int *flags, volatile unsigned int *tx)
 {
     UNUSED(dataLength);
-    UNUSED(p2);
-    UNUSED(p1);
     uint8_t txc = 0;
    
     if (p2 == 0) 
@@ -34,7 +32,7 @@ void handleGenAlpha(uint8_t p1, uint8_t p2, uint8_t *dataBuffer, uint16_t dataLe
             os_memmove(G_crypto_state_t.alphaToken + (i * 32), alphaToken, 32);
         }
     }
-    
+
     G_io_apdu_buffer[txc++] = 0x90;
     G_io_apdu_buffer[txc++] = 0x00;
     sendResponse(txc, true);
