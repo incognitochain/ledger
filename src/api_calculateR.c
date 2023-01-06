@@ -58,7 +58,14 @@ void handleCalculateR(uint8_t p1, uint8_t p2, uint8_t* dataBuffer, uint16_t data
     unsigned char result[32];
     os_memset(processData, 0, sizeof(processData));
     os_memmove(c, dataBuffer, 32);
-    os_memmove(alpha, G_crypto_state_t.alpha + (p2 * 32), 32);
+    if (p1 == 0)
+    {
+        os_memmove(alpha, G_crypto_state_t.alpha + (p2 * 32), 32);
+    }
+    else 
+    {
+        os_memmove(alpha, G_crypto_state_t.alphaToken + (p2 * 32), 32);
+    }
     os_memmove(coinPrivate, G_crypto_state_t.coinPrivateKey + (p2 * 32), 32);
     incognito_multm(ck, c, coinPrivate);
     incognito_subm(result, alpha, ck);
