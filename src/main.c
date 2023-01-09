@@ -11,7 +11,6 @@ unsigned char G_io_seproxyhal_spi_buffer[IO_SEPROXYHAL_BUFFER_SIZE_B];
 
 #define INS_GET_ADDR 0x02
 #define INS_GET_VIEW 0x03
-#define INS_GET_PRIV 0x04 
 #define INS_SWITCH_KEY 0x05
 #define INS_GET_OTA 0x06
 #define INS_GET_VLD 0x07
@@ -22,8 +21,6 @@ unsigned char G_io_seproxyhal_spi_buffer[IO_SEPROXYHAL_BUFFER_SIZE_B];
 #define INS_CALC_C 0x22
 #define INS_CALC_R 0x23
 #define INS_COIN_PRIV 0x24
-#define INS_SET_ALPHA 0x25
-#define INS_GET_ALPHA 0x26
 #define INS_DECRYPT_COIN 0x27
 #define INS_CALC_CCA 0x28
 
@@ -63,9 +60,6 @@ void handleApdu(volatile unsigned int *flags, volatile unsigned int *tx)
             case INS_GET_ADDR:
                 handleGetAddress(G_io_apdu_buffer[OFFSET_P1], G_io_apdu_buffer[OFFSET_P2], G_io_apdu_buffer + OFFSET_CDATA, G_io_apdu_buffer[OFFSET_LC], flags, tx);
                 break;
-            case INS_GET_PRIV:
-                handleGetPrivate(G_io_apdu_buffer[OFFSET_P1], G_io_apdu_buffer[OFFSET_P2], G_io_apdu_buffer + OFFSET_CDATA, G_io_apdu_buffer[OFFSET_LC], flags, tx);
-                break;
             case INS_SWITCH_KEY:
                 handleSwitchAccount(G_io_apdu_buffer[OFFSET_P1], G_io_apdu_buffer[OFFSET_P2], G_io_apdu_buffer + OFFSET_CDATA, G_io_apdu_buffer[OFFSET_LC], flags, tx);
                 break;
@@ -83,14 +77,6 @@ void handleApdu(volatile unsigned int *flags, volatile unsigned int *tx)
                 break;
             case INS_GEN_ALPHA:
                 handleGenAlpha(G_io_apdu_buffer[OFFSET_P1], G_io_apdu_buffer[OFFSET_P2], G_io_apdu_buffer + OFFSET_CDATA, G_io_apdu_buffer[OFFSET_LC], flags, tx);
-                break;
-            //debug
-            case INS_SET_ALPHA:
-                handleSetAlpha(G_io_apdu_buffer[OFFSET_P1], G_io_apdu_buffer[OFFSET_P2], G_io_apdu_buffer + OFFSET_CDATA, G_io_apdu_buffer[OFFSET_LC], flags, tx);
-                break;
-            //debug
-            case INS_GET_ALPHA:
-                handleGetAlpha(G_io_apdu_buffer[OFFSET_P1], G_io_apdu_buffer[OFFSET_P2], G_io_apdu_buffer + OFFSET_CDATA, G_io_apdu_buffer[OFFSET_LC], flags, tx);
                 break;
             case INS_CALC_C:
                 handleCalculateC(G_io_apdu_buffer[OFFSET_P1], G_io_apdu_buffer[OFFSET_P2], G_io_apdu_buffer + OFFSET_CDATA, G_io_apdu_buffer[OFFSET_LC], flags, tx);
