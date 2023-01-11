@@ -88,7 +88,6 @@ void handleSwitchAccount(uint8_t p1, uint8_t p2, uint8_t* dataBuffer, uint16_t d
     explicit_bzero(processData, sizeof(processData));
     os_memmove(processData, dataBuffer, 4);
     accNum = (processData[0] << 24) | (processData[1] << 16) | (processData[2] << 8) | (processData[3]);
-
-    ux_flow_init(0, ux_display_switch_flow, NULL);
-    *flags |= IO_ASYNCH_REPLY;
+    sendResponse(set_result_switch_account(), true);
+    
 };
