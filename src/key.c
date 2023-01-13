@@ -3,6 +3,7 @@
 #include "crypto.h"
 #include "key.h"
 #include "cx.h"
+#include "string.h"
 
 static const uint32_t HARDENED_OFFSET = 0x80000000;
 
@@ -18,7 +19,7 @@ void incognito_gen_private_key(uint32_t account_number)
   uint32_t bip32Path[BIP32_PATH];
   unsigned char seed[32];
 
-  os_memmove(bip32Path, derivePath, sizeof(derivePath));
+  memmove(bip32Path, derivePath, sizeof(derivePath));
   bip32Path[2] = account_number | HARDENED_OFFSET;
   os_perso_derive_node_bip32(CX_CURVE_SECP256K1, bip32Path, 5, seed, G_crypto_state_t.key.chain_code);
 
@@ -35,7 +36,7 @@ void incognito_gen_private_key(uint32_t account_number)
   uint8_t buffer[64];
   cx_hmac_sha512(child_number, 4, G_crypto_state_t.key.chain_code, 32, buffer, CX_SHA512_SIZE);
 
-  os_memmove(G_crypto_state_t.key.chain_code, buffer + 32, 32);
+  memmove(G_crypto_state_t.key.chain_code, buffer + 32, 32);
 }
 
 void incognito_init_private_key()
@@ -46,16 +47,16 @@ void incognito_init_private_key()
   incognito_init_crypto_state();
 }
 
-void incognito_load_key(unsigned char *key[69], privatekey_t *privKey)
-{
-}
+// void incognito_load_key(unsigned char *key[69], privatekey_t *privKey)
+// {
+// }
 
 void incognito_reset_crypto_state()
 {
   G_crypto_state_t.key.depth = 0;
   G_crypto_state_t.key.child_number = 0;
-  // os_memset(G_crypto_state_t.key.chain_code, 0, 32);
-  os_memset(G_crypto_state_t.key.key, 0, 32);
+  // memset(G_crypto_state_t.key.chain_code, 0, 32);
+  memset(G_crypto_state_t.key.key, 0, 32);
 }
 
 void incognito_init_crypto_state()
@@ -95,8 +96,8 @@ void incognito_gen_public_spend_key(unsigned char *key)
 void incognito_gen_private_ota_key(unsigned char *key)
 {
   unsigned char otakey[46];
-  os_memmove(otakey, G_crypto_state_t.key.key, 32);
-  os_memmove(otakey + 32, "onetimeaddress", 14);
+  memmove(otakey, G_crypto_state_t.key.key, 32);
+  memmove(otakey + 32, "onetimeaddress", 14);
   incognito_hash_to_scalar(key, otakey, 46);
 }
 

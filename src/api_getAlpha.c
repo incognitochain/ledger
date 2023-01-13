@@ -6,34 +6,38 @@
 #include "crypto.h"
 #include "menu.h"
 #include "key.h"
+#include "string.h"
 
 static uint8_t set_result_get_alpha()
 {
     uint8_t tx = 0;
-    os_memmove(G_io_apdu_buffer + tx, processData, 32);
+    memmove(G_io_apdu_buffer + tx, processData, 32);
     tx += 32;
 
-    os_memset(processData, 0, sizeof(processData));
+    memset(processData, 0, sizeof(processData));
     return tx;
 }
 
 void handleGetAlpha(uint8_t p1, uint8_t p2, uint8_t* dataBuffer, uint16_t dataLength, volatile unsigned int* flags, volatile unsigned int* tx)
 {
     UNUSED(dataLength);
+    UNUSED(tx);
+    UNUSED(dataBuffer);
+    UNUSED(flags);
 
     unsigned char alpha[32];
     unsigned char alphaToken[32];
     if (p2 == 0)
     {
-        os_memset(processData, 0, sizeof(processData));
-        os_memmove(alpha, G_crypto_state_t.alpha + (p1 * 32), 32);
-        os_memmove(processData, alpha, 32);
+        memset(processData, 0, sizeof(processData));
+        memmove(alpha, G_crypto_state_t.alpha + (p1 * 32), 32);
+        memmove(processData, alpha, 32);
     }
     else 
     {
-        os_memset(processData, 0, sizeof(processData));
-        os_memmove(alphaToken, G_crypto_state_t.alphaToken + (p1 * 32), 32);
-        os_memmove(processData, alphaToken, 32);
+        memset(processData, 0, sizeof(processData));
+        memmove(alphaToken, G_crypto_state_t.alphaToken + (p1 * 32), 32);
+        memmove(processData, alphaToken, 32);
     }
     
     

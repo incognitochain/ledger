@@ -6,6 +6,7 @@
 #include "menu.h"
 #include "crypto.h"
 #include "globals.h"
+#include "string.h"
 
 #define ACCOUNT_ADDRESS_PREFIX 1
 
@@ -27,7 +28,7 @@ unsigned char encodeBase58(unsigned char WIDE *in, unsigned char length,
     {
         THROW(INVALID_PARAMETER);
     }
-    os_memmove(tmp, in, length);
+    memmove(tmp, in, length);
     while ((zeroCount < length) && (tmp[zeroCount] == 0))
     {
         ++zeroCount;
@@ -64,7 +65,7 @@ unsigned char encodeBase58(unsigned char WIDE *in, unsigned char length,
     {
         THROW(EXCEPTION_OVERFLOW);
     }
-    os_memmove(out, (buffer + j), length);
+    memmove(out, (buffer + j), length);
     return length;
 }
 

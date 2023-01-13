@@ -4,10 +4,14 @@
 #include "utils.h"
 #include "crypto.h"
 #include "globals.h"
+#include "string.h"
 
 void handleGenAlpha(uint8_t p1, uint8_t p2, uint8_t *dataBuffer, uint16_t dataLength, volatile unsigned int *flags, volatile unsigned int *tx)
 {
     UNUSED(dataLength);
+    UNUSED(tx);
+    UNUSED(dataBuffer);
+    UNUSED(flags);
     uint8_t txc = 0;
    
     if (p2 == 0) 
@@ -18,7 +22,7 @@ void handleGenAlpha(uint8_t p1, uint8_t p2, uint8_t *dataBuffer, uint16_t dataLe
             cx_rng(rnd, 32);
             unsigned char alpha[32];
             incognito_hash_to_scalar(alpha, rnd, 32);
-            os_memmove(G_crypto_state_t.alpha + (i * 32), alpha, 32);       
+            memmove(G_crypto_state_t.alpha + (i * 32), alpha, 32);       
         }
     } 
     else 
@@ -29,7 +33,7 @@ void handleGenAlpha(uint8_t p1, uint8_t p2, uint8_t *dataBuffer, uint16_t dataLe
             cx_rng(rndToken, 32);
             unsigned char alphaToken[32];
             incognito_hash_to_scalar(alphaToken, rndToken, 32);
-            os_memmove(G_crypto_state_t.alphaToken + (i * 32), alphaToken, 32);
+            memmove(G_crypto_state_t.alphaToken + (i * 32), alphaToken, 32);
         }
     }
 

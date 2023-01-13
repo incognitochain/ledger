@@ -46,6 +46,9 @@ void handleTrustDevice(uint8_t p1, uint8_t p2, uint8_t* dataBuffer, uint16_t dat
 {
     UNUSED(dataLength);
     UNUSED(p2);
+    UNUSED(p1);
+    UNUSED(tx);
+    UNUSED(dataBuffer);
     if (trust_host == 0) {
         ux_flow_init(0, ux_display_trust_flow, NULL);
         *flags |= IO_ASYNCH_REPLY;

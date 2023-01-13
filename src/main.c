@@ -236,6 +236,7 @@ void io_seproxyhal_display(const bagl_element_t *element)
 
 unsigned char io_event(unsigned char channel)
 {
+    UNUSED(channel);
     // unsigned int s_before;
     // unsigned int s_after;
 

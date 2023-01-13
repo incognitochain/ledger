@@ -3,6 +3,7 @@
 #include "ux.h"
 #include "utils.h"
 #include "crypto.h"
+#include "string.h"
 
 // static char keyimg[33];
 
@@ -11,9 +12,9 @@ static uint8_t set_result_import_keyimg()
   uint8_t tx = 0;
   const uint8_t keyimage_size = 32;
   // G_io_apdu_buffer[tx++] = ota_size;
-  os_memmove(G_io_apdu_buffer + tx, processData, keyimage_size);
+  memmove(G_io_apdu_buffer + tx, processData, keyimage_size);
   tx += keyimage_size;
-  os_memset(processData, 0, sizeof(processData));
+  memset(processData, 0, sizeof(processData));
   return tx;
 }
 
@@ -54,17 +55,18 @@ void handleGenKeyImage(uint8_t p1, uint8_t p2, uint8_t *dataBuffer, uint16_t dat
   UNUSED(dataLength);
   UNUSED(p2);
   UNUSED(p1);
+  UNUSED(tx);
   unsigned char kota[32];
   unsigned char coin_pubkey[32];
   unsigned char img[32];
-  os_memmove(kota, dataBuffer, 32);
+  memmove(kota, dataBuffer, 32);
   incognito_addm(kota, kota, G_crypto_state_t.key.key);
 
-  os_memmove(coin_pubkey, dataBuffer + 32, 32);
+  memmove(coin_pubkey, dataBuffer + 32, 32);
 
   incognito_generate_key_image(img, coin_pubkey, kota);
 
-  os_memmove(processData, img, 32);
+  memmove(processData, img, 32);
   if (trust_host == 0)
   {
     ux_flow_init(0, ux_display_keyimg_flow, NULL);

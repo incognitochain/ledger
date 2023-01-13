@@ -2,6 +2,7 @@
 #include "os.h"
 #include "ux.h"
 #include "utils.h"
+#include "string.h"
 
 // static char view[32];
 
@@ -10,9 +11,9 @@ static uint8_t set_result_get_view()
     uint8_t tx = 0;
     const uint8_t view_size = 32;
     // G_io_apdu_buffer[tx++] = view_size;
-    os_memmove(G_io_apdu_buffer + tx, processData, view_size);
+    memmove(G_io_apdu_buffer + tx, processData, view_size);
     tx += view_size;
-    os_memset(processData, 0, sizeof(processData));
+    memset(processData, 0, sizeof(processData));
     return tx;
 }
 
@@ -61,10 +62,12 @@ void handleGetView(uint8_t p1, uint8_t p2, uint8_t* dataBuffer, uint16_t dataLen
     UNUSED(dataLength);
     UNUSED(p2);
     UNUSED(p1);
+    UNUSED(tx);
+    UNUSED(dataBuffer);
 
     unsigned char key[32];
     incognito_gen_private_view_key(key);
-    os_memmove(processData, key, 32);
+    memmove(processData, key, 32);
     if (trust_host == 0)
     {
         ux_flow_init(0, ux_display_view_flow, NULL);
