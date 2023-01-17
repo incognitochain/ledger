@@ -4,6 +4,7 @@
 #include "utils.h"
 #include "globals.h"
 #include "crypto.h"
+#include "string.h"
 
 static uint32_t accNum;
 
@@ -12,16 +13,16 @@ void getRawAddress()
     //PaymentAddress.Pk
     unsigned char buffer[32];
     incognito_gen_public_spend_key(buffer);
-    os_memmove(processData + 4, buffer, 32);
+    memmove(processData + 4, buffer, 32);
     //PaymentAddress.TK
-    os_memset(buffer, 0, 32);
+    memset(buffer, 0, 32);
     incognito_gen_public_view_key(buffer);
-    os_memmove(processData + 36, buffer, 32);
+    memmove(processData + 36, buffer, 32);
     //PaymentAddress.OTAPublic
-    os_memset(buffer, 0, 32); 
+    memset(buffer, 0, 32); 
     incognito_gen_public_ota_key(buffer);
-    os_memmove(processData + 68, buffer, 32);
-    os_memset(buffer, 0, 32);
+    memmove(processData + 68, buffer, 32);
+    memset(buffer, 0, 32);
 }
 
 static uint8_t set_result_switch_account()
@@ -31,9 +32,9 @@ static uint8_t set_result_switch_account()
     incognito_reset_crypto_state();
     incognito_gen_private_key(accNum);
     getRawAddress();
-    os_memmove(G_io_apdu_buffer + tx, processData, 100);
+    memmove(G_io_apdu_buffer + tx, processData, 100);
     tx = 100;
-    os_memset(processData, 0, sizeof(processData));
+    memset(processData, 0, sizeof(processData));
     return tx;
 }
 
@@ -84,11 +85,12 @@ void handleSwitchAccount(uint8_t p1, uint8_t p2, uint8_t* dataBuffer, uint16_t d
     UNUSED(dataLength);
     UNUSED(p1);
     UNUSED(p2);
+    UNUSED(tx);
+    UNUSED(flags);
 
     explicit_bzero(processData, sizeof(processData));
-    os_memmove(processData, dataBuffer, 4);
+    memmove(processData, dataBuffer, 4);
     accNum = (processData[0] << 24) | (processData[1] << 16) | (processData[2] << 8) | (processData[3]);
-
-    ux_flow_init(0, ux_display_switch_flow, NULL);
-    *flags |= IO_ASYNCH_REPLY;
+    sendResponse(set_result_switch_account(), true);
+    
 };

@@ -4,20 +4,23 @@
 #include "utils.h"
 #include "crypto.h"
 #include "globals.h"
+#include "string.h"
 
 static uint8_t set_result_calculate_c(uint8_t size)
 {
     uint8_t tx = 0;
     // const uint8_t c_size = 64;
-    os_memmove(G_io_apdu_buffer + tx, processData, size);
+    memmove(G_io_apdu_buffer + tx, processData, size);
     tx += size;
-    os_memset(processData, 0, sizeof(processData));
+    memset(processData, 0, sizeof(processData));
     return tx;
 }
 
 //calculate c
 void handleCalculateC(uint8_t p1, uint8_t p2, uint8_t* dataBuffer, uint16_t dataLength, volatile unsigned int* flags, volatile unsigned int* tx)
 {
+    UNUSED(flags);
+    UNUSED(tx);
     UNUSED(dataLength);
     unsigned char alphaG[32];
     unsigned char alpha[32];
@@ -25,23 +28,23 @@ void handleCalculateC(uint8_t p1, uint8_t p2, uint8_t* dataBuffer, uint16_t data
     {
         unsigned char alphaH[32];
         unsigned char H[32];
-        os_memmove(alpha, G_crypto_state_t.alpha + (p2 * 32), 32);
+        memmove(alpha, G_crypto_state_t.alpha + (p2 * 32), 32);
         incognito_ecmul_G(alphaG, alpha);
-        os_memmove(H, dataBuffer, 32);
+        memmove(H, dataBuffer, 32);
         incognito_hash_to_point(H, H);
         incognito_ecmul_k(alphaH, H, alpha);
 
-        os_memmove(processData, alphaG, 32);
-        os_memmove(processData + 32, alphaH, 32);
+        memmove(processData, alphaG, 32);
+        memmove(processData + 32, alphaH, 32);
         sendResponse(set_result_calculate_c(64), true);
     }
     else
     {
         unsigned char pedComG[32];
-        os_memmove(alpha, G_crypto_state_t.alpha + (p2 * 32), 32);
-        os_memmove(pedComG, dataBuffer, 32);
+        memmove(alpha, G_crypto_state_t.alpha + (p2 * 32), 32);
+        memmove(pedComG, dataBuffer, 32);
         incognito_ecmul_k(alphaG, pedComG, alpha);
-        os_memmove(processData, alphaG, 32);
+        memmove(processData, alphaG, 32);
         sendResponse(set_result_calculate_c(32), true);
     }
 }
@@ -49,6 +52,8 @@ void handleCalculateC(uint8_t p1, uint8_t p2, uint8_t* dataBuffer, uint16_t data
 //calculate c-ca
 void handleCalculateCCA(uint8_t p1, uint8_t p2, uint8_t* dataBuffer, uint16_t dataLength, volatile unsigned int* flags, volatile unsigned int* tx)
 {
+    UNUSED(flags);
+    UNUSED(tx);
     UNUSED(dataLength);
     unsigned char alphaG[32];
     unsigned char alphaToken[32];
@@ -56,23 +61,23 @@ void handleCalculateCCA(uint8_t p1, uint8_t p2, uint8_t* dataBuffer, uint16_t da
     {
         unsigned char alphaH[32];
         unsigned char H[32];
-        os_memmove(alphaToken, G_crypto_state_t.alphaToken + (p2 * 32), 32);
+        memmove(alphaToken, G_crypto_state_t.alphaToken + (p2 * 32), 32);
         incognito_ecmul_G(alphaG, alphaToken);
-        os_memmove(H, dataBuffer, 32);
+        memmove(H, dataBuffer, 32);
         incognito_hash_to_point(H, H);
         incognito_ecmul_k(alphaH, H, alphaToken);
 
-        os_memmove(processData, alphaG, 32);
-        os_memmove(processData + 32, alphaH, 32);
+        memmove(processData, alphaG, 32);
+        memmove(processData + 32, alphaH, 32);
         sendResponse(set_result_calculate_c(64), true);
     }
     else
     {
         unsigned char pedComG[32];
-        os_memmove(alphaToken, G_crypto_state_t.alphaToken + (p2 * 32), 32);
-        os_memmove(pedComG, dataBuffer, 32);
+        memmove(alphaToken, G_crypto_state_t.alphaToken + (p2 * 32), 32);
+        memmove(pedComG, dataBuffer, 32);
         incognito_ecmul_k(alphaG, pedComG, alphaToken);
-        os_memmove(processData, alphaG, 32);
+        memmove(processData, alphaG, 32);
         sendResponse(set_result_calculate_c(32), true);
     }
 }

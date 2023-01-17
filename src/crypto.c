@@ -3,6 +3,7 @@
 
 #include "globals.h"
 #include "crypto.h"
+#include "string.h"
 
 /* ----------------------------------------------------------------------- */
 /* ---                                                                 --- */
@@ -343,7 +344,7 @@ void incognito_ge_fromfe_frombytes(unsigned char *ge, unsigned char *bytes)
     cx_math_multm(v, u, u, MOD); /* 2 * u^2 */
     cx_math_addm(v, v, v, MOD);
 
-    os_memset(w, 0, 32);
+    memset(w, 0, 32);
     w[31] = 1;                                           /* w = 1 */
     cx_math_addm(w, v, w, MOD);                          /* w = 2 * u^2 + 1 */
     cx_math_multm(x, w, w, MOD);                         /* w^2 */
@@ -367,7 +368,7 @@ void incognito_ge_fromfe_frombytes(unsigned char *ge, unsigned char *bytes)
     cx_math_multm(y, rX, rX, MOD);
     cx_math_multm(x, y, x, MOD);
     cx_math_subm(y, w, x, MOD);
-    os_memmove(z, C_fe_ma, 32);
+    memmove(z, C_fe_ma, 32);
 
     if (!cx_math_is_zero(y, 32))
     {
@@ -422,8 +423,8 @@ setsign:
     Pxy[0] = 0x04;
     cx_math_multm(&Pxy[1], rX, u, MOD);
     cx_math_multm(&Pxy[1 + 32], rY, u, MOD);
-    cx_edward_compress_point(CX_CURVE_Ed25519, Pxy, sizeof(Pxy));
-    os_memmove(ge, &Pxy[1], 32);
+    cx_edwards_compress_point(CX_CURVE_Ed25519, Pxy, sizeof(Pxy));
+    memmove(ge, &Pxy[1], 32);
 
 #undef u
 #undef v
@@ -501,7 +502,7 @@ void incognito_derivation_to_scalar(unsigned char *scalar, unsigned char *drv_da
     unsigned char varint[32 + 8];
     unsigned int len_varint;
 
-    os_memmove(varint, drv_data, 32);
+    memmove(varint, drv_data, 32);
     len_varint = incognito_encode_varint(varint + 32, 8, out_idx);
     len_varint += 32;
     incognito_keccak_F(varint, len_varint, varint);
@@ -606,9 +607,9 @@ void incognito_get_subaddress_secret_key(unsigned char *sub_s, unsigned char *s,
 {
     unsigned char in[sizeof(C_sub_address_prefix) + 32 + 8];
 
-    os_memmove(in, C_sub_address_prefix, sizeof(C_sub_address_prefix)),
-        os_memmove(in + sizeof(C_sub_address_prefix), s, 32);
-    os_memmove(in + sizeof(C_sub_address_prefix) + 32, index, 8);
+    memmove(in, C_sub_address_prefix, sizeof(C_sub_address_prefix)),
+        memmove(in + sizeof(C_sub_address_prefix), s, 32);
+    memmove(in + sizeof(C_sub_address_prefix) + 32, index, 8);
     // hash_to_scalar with more that 32bytes:
     incognito_keccak_F(in, sizeof(in), sub_s);
     incognito_reduce(sub_s, sub_s);
@@ -649,10 +650,10 @@ void incognito_ecmul_G(unsigned char *W, unsigned char *scalar32)
     unsigned char Pxy[65];
     unsigned char s[32];
     incognito_reverse32(s, scalar32);
-    os_memmove(Pxy, C_ED25519_G, 65);
+    memmove(Pxy, C_ED25519_G, 65);
     cx_ecfp_scalar_mult(CX_CURVE_Ed25519, Pxy, sizeof(Pxy), s, 32);
-    cx_edward_compress_point(CX_CURVE_Ed25519, Pxy, sizeof(Pxy));
-    os_memmove(W, &Pxy[1], 32);
+    cx_edwards_compress_point(CX_CURVE_Ed25519, Pxy, sizeof(Pxy));
+    memmove(W, &Pxy[1], 32);
 }
 
 /* ----------------------------------------------------------------------- */
@@ -666,13 +667,13 @@ void incognito_ecmul_H(unsigned char *W, unsigned char *scalar32)
     incognito_reverse32(s, scalar32);
 
     Pxy[0] = 0x02;
-    os_memmove(&Pxy[1], C_ED25519_Hy, 32);
-    cx_edward_decompress_point(CX_CURVE_Ed25519, Pxy, sizeof(Pxy));
+    memmove(&Pxy[1], C_ED25519_Hy, 32);
+    cx_edwards_decompress_point(CX_CURVE_Ed25519, Pxy, sizeof(Pxy));
 
     cx_ecfp_scalar_mult(CX_CURVE_Ed25519, Pxy, sizeof(Pxy), s, 32);
-    cx_edward_compress_point(CX_CURVE_Ed25519, Pxy, sizeof(Pxy));
+    cx_edwards_compress_point(CX_CURVE_Ed25519, Pxy, sizeof(Pxy));
 
-    os_memmove(W, &Pxy[1], 32);
+    memmove(W, &Pxy[1], 32);
 }
 
 /* ----------------------------------------------------------------------- */
@@ -686,13 +687,13 @@ void incognito_ecmul_k(unsigned char *W, unsigned char *P, unsigned char *scalar
     incognito_reverse32(s, scalar32);
 
     Pxy[0] = 0x02;
-    os_memmove(&Pxy[1], P, 32);
-    cx_edward_decompress_point(CX_CURVE_Ed25519, Pxy, sizeof(Pxy));
+    memmove(&Pxy[1], P, 32);
+    cx_edwards_decompress_point(CX_CURVE_Ed25519, Pxy, sizeof(Pxy));
 
     cx_ecfp_scalar_mult(CX_CURVE_Ed25519, Pxy, sizeof(Pxy), s, 32);
-    cx_edward_compress_point(CX_CURVE_Ed25519, Pxy, sizeof(Pxy));
+    cx_edwards_compress_point(CX_CURVE_Ed25519, Pxy, sizeof(Pxy));
 
-    os_memmove(W, &Pxy[1], 32);
+    memmove(W, &Pxy[1], 32);
 }
 
 /* ----------------------------------------------------------------------- */
@@ -713,13 +714,13 @@ void incognito_ecmul_8(unsigned char *W, unsigned char *P)
     unsigned char Pxy[65];
 
     Pxy[0] = 0x02;
-    os_memmove(&Pxy[1], P, 32);
-    cx_edward_decompress_point(CX_CURVE_Ed25519, Pxy, sizeof(Pxy));
+    memmove(&Pxy[1], P, 32);
+    cx_edwards_decompress_point(CX_CURVE_Ed25519, Pxy, sizeof(Pxy));
     cx_ecfp_add_point(CX_CURVE_Ed25519, Pxy, Pxy, Pxy, sizeof(Pxy));
     cx_ecfp_add_point(CX_CURVE_Ed25519, Pxy, Pxy, Pxy, sizeof(Pxy));
     cx_ecfp_add_point(CX_CURVE_Ed25519, Pxy, Pxy, Pxy, sizeof(Pxy));
-    cx_edward_compress_point(CX_CURVE_Ed25519, Pxy, sizeof(Pxy));
-    os_memmove(W, &Pxy[1], 32);
+    cx_edwards_compress_point(CX_CURVE_Ed25519, Pxy, sizeof(Pxy));
+    memmove(W, &Pxy[1], 32);
 }
 
 /* ----------------------------------------------------------------------- */
@@ -731,17 +732,17 @@ void incognito_ecadd(unsigned char *W, unsigned char *P, unsigned char *Q)
     unsigned char Qxy[65];
 
     Pxy[0] = 0x02;
-    os_memmove(&Pxy[1], P, 32);
-    cx_edward_decompress_point(CX_CURVE_Ed25519, Pxy, sizeof(Pxy));
+    memmove(&Pxy[1], P, 32);
+    cx_edwards_decompress_point(CX_CURVE_Ed25519, Pxy, sizeof(Pxy));
 
     Qxy[0] = 0x02;
-    os_memmove(&Qxy[1], Q, 32);
-    cx_edward_decompress_point(CX_CURVE_Ed25519, Qxy, sizeof(Qxy));
+    memmove(&Qxy[1], Q, 32);
+    cx_edwards_decompress_point(CX_CURVE_Ed25519, Qxy, sizeof(Qxy));
 
     cx_ecfp_add_point(CX_CURVE_Ed25519, Pxy, Pxy, Qxy, sizeof(Pxy));
 
-    cx_edward_compress_point(CX_CURVE_Ed25519, Pxy, sizeof(Pxy));
-    os_memmove(W, &Pxy[1], 32);
+    cx_edwards_compress_point(CX_CURVE_Ed25519, Pxy, sizeof(Pxy));
+    memmove(W, &Pxy[1], 32);
 }
 
 /* ----------------------------------------------------------------------- */
@@ -753,18 +754,18 @@ void incognito_ecsub(unsigned char *W, unsigned char *P, unsigned char *Q)
     unsigned char Qxy[65];
 
     Pxy[0] = 0x02;
-    os_memmove(&Pxy[1], P, 32);
-    cx_edward_decompress_point(CX_CURVE_Ed25519, Pxy, sizeof(Pxy));
+    memmove(&Pxy[1], P, 32);
+    cx_edwards_decompress_point(CX_CURVE_Ed25519, Pxy, sizeof(Pxy));
 
     Qxy[0] = 0x02;
-    os_memmove(&Qxy[1], Q, 32);
-    cx_edward_decompress_point(CX_CURVE_Ed25519, Qxy, sizeof(Qxy));
+    memmove(&Qxy[1], Q, 32);
+    cx_edwards_decompress_point(CX_CURVE_Ed25519, Qxy, sizeof(Qxy));
 
     cx_math_sub(Qxy + 1, (unsigned char *)C_ED25519_FIELD, Qxy + 1, 32);
     cx_ecfp_add_point(CX_CURVE_Ed25519, Pxy, Pxy, Qxy, sizeof(Pxy));
 
-    cx_edward_compress_point(CX_CURVE_Ed25519, Pxy, sizeof(Pxy));
-    os_memmove(W, &Pxy[1], 32);
+    cx_edwards_compress_point(CX_CURVE_Ed25519, Pxy, sizeof(Pxy));
+    memmove(W, &Pxy[1], 32);
 }
 
 /* ----------------------------------------------------------------------- */
@@ -784,8 +785,8 @@ void incognito_ecsub(unsigned char *W, unsigned char *P, unsigned char *Q)
 void incognito_ecdhHash(unsigned char *x, unsigned char *k)
 {
     unsigned char data[38];
-    os_memmove(data, "amount", 6);
-    os_memmove(data + 6, k, 32);
+    memmove(data, "amount", 6);
+    memmove(data + 6, k, 32);
     incognito_keccak_F(data, 38, x);
 }
 
@@ -806,8 +807,8 @@ void incognito_ecdhHash(unsigned char *x, unsigned char *k)
 void incognito_genCommitmentMask(unsigned char *c, unsigned char *sk)
 {
     unsigned char data[15 + 32];
-    os_memmove(data, "commitment_mask", 15);
-    os_memmove(data + 15, sk, 32);
+    memmove(data, "commitment_mask", 15);
+    memmove(data + 15, sk, 32);
     incognito_hash_to_scalar(c, data, 15 + 32);
 }
 
@@ -861,7 +862,7 @@ void incognito_multm_8(unsigned char *r, unsigned char *a)
     unsigned char rb[32];
 
     incognito_reverse32(ra, a);
-    os_memset(rb, 0, 32);
+    memset(rb, 0, 32);
     rb[31] = 8;
     cx_math_multm(r, ra, rb, (unsigned char *)C_ED25519_ORDER, 32);
     incognito_reverse32(r, r);
@@ -893,8 +894,8 @@ void incognito_rng_range(unsigned char *r, uint8_t *max)
 {
     unsigned char rnd[32];
     cx_rng(rnd, 32);
-    cx_math_modm(rnd, 32, (char *)max, 8);
-    // incognito_reverse32(r, rnd);
+    cx_math_modm(rnd, 32, (uint8_t *)max, 8);
+    incognito_reverse32(r, rnd);
 }
 
 /* ----------------------------------------------------------------------- */
@@ -906,7 +907,7 @@ void incognito_uint642str(uint64_t val, char *str, unsigned int str_len)
     char stramount[22];
     unsigned int offset, len;
 
-    os_memset(str, 0, str_len);
+    memset(str, 0, str_len);
 
     offset = 22;
     while (val)
@@ -920,7 +921,7 @@ void incognito_uint642str(uint64_t val, char *str, unsigned int str_len)
     {
         THROW(SW_WRONG_DATA_RANGE);
     }
-    os_memmove(str, stramount + offset, len);
+    memmove(str, stramount + offset, len);
 }
 
 /* ----------------------------------------------------------------------- */
@@ -933,9 +934,9 @@ int incognito_amount2str(uint64_t xmr, char *str, unsigned int str_len)
     char stramount[22];
     unsigned int offset, len, ov;
 
-    os_memset(str, 0, str_len);
+    memset(str, 0, str_len);
 
-    os_memset(stramount, '0', sizeof(stramount));
+    memset(stramount, '0', sizeof(stramount));
     stramount[21] = 0;
     // special case
     if (xmr == 0)
@@ -959,7 +960,7 @@ int incognito_amount2str(uint64_t xmr, char *str, unsigned int str_len)
     // offset: 0-7 | 8 | 9-20 |21
     // ----------------------
     // value:  xmr | . | units| 0
-    os_memmove(stramount, stramount + 1, 8);
+    memmove(stramount, stramount + 1, 8);
     stramount[8] = '.';
     offset = 0;
     while ((stramount[offset] == '0') && (stramount[offset] != '.'))
@@ -982,7 +983,7 @@ int incognito_amount2str(uint64_t xmr, char *str, unsigned int str_len)
         len = str_len - 1;
         ov = 1;
     }
-    os_memmove(str, stramount + offset, len);
+    memmove(str, stramount + offset, len);
     return ov;
 }
 
@@ -1029,5 +1030,5 @@ void incognito_doublesha256(unsigned char *buf, unsigned int len, unsigned char 
 void incognito_add_B58checksum(unsigned char *preEncode, unsigned int len, unsigned char *buf)
 {
     incognito_doublesha256(preEncode, len, buf);
-    os_memmove(preEncode + len, buf, 4);
+    memmove(preEncode + len, buf, 4);
 }
