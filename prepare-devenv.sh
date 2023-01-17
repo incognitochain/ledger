@@ -8,7 +8,7 @@ if [ $# -ne 1 ]; then
 elif [[ $1 == "-h" ]]; then
     echo "Possible options: blue, s, sp or x"
     return
-elif [[ $1 != "blue" ]] && [[ $1 != "s" ]] && [[ $1 != "x" ]]; then
+elif [[ $1 != "blue" ]] && [[ $1 != "s" ]] && [[ $1 != "x" ]] && [[ $1 != "sp" ]]; then
     echo "Possible options: blue, s, sp or x"
     return
 fi

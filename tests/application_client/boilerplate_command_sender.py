@@ -34,6 +34,7 @@ class InsType(IntEnum):
     GET_OTA_KEY = 0x06
     GET_KEY_IMAGE = 0x10
     GEN_ALPHA = 0x21
+    SET_ALPHA = 0x25
     CALC_C = 0x22
     CALC_CCA = 0x28
     CALC_R = 0x23
@@ -97,39 +98,53 @@ class BoilerplateCommandSender:
                                            data=pack_derivation_path(path))
 
     def gen_key_image(self, data) -> RAPDU:
-        return self.backend.exchange_async(cla=CLA,
-                                           ins=InsType.GET_KEY_IMAGE,
-                                           p1=P1.P1_START,
-                                           p2=P2.P2_LAST,
-                                           data=data)
-
-    def gen_alpha(self, p1) -> RAPDU:
         return self.backend.exchange(cla=CLA,
-                                     ins=InsType.GEN_ALPHA,
-                                     p1=p1,
-                                     p2=P2.P2_LAST,
-                                     data=b"")
-
-    def calc_c(self, data: bytes, isca: bool) -> RAPDU:
-        return self.backend.exchange(cla=CLA,
-                                     ins=InsType.CALC_CCA if isca else InsType.CALC_C,
+                                     ins=InsType.GET_KEY_IMAGE,
                                      p1=P1.P1_START,
                                      p2=P2.P2_LAST,
                                      data=data)
 
-    def calc_r(self, p1, p2, data) -> RAPDU:
+    def gen_alpha(self, p2) -> RAPDU:
         return self.backend.exchange(cla=CLA,
-                                     ins=InsType.GET_KEY_IMAGE,
+                                     ins=InsType.GEN_ALPHA,
+                                     p1=P1.P1_START,
+                                     p2=p2,
+                                     data=b"")
+
+    def set_alpha(self, p1, data) -> RAPDU:
+        return self.backend.exchange(cla=CLA,
+                                     ins=InsType.SET_ALPHA,
+                                     p1=p1,
+                                     p2=P2.P2_LAST,
+                                     data=data)
+
+    def calc_c(self, p1, p2, data: bytes, isca: bool) -> RAPDU:
+        return self.backend.exchange(cla=CLA,
+                                     ins=InsType.CALC_CCA if isca else InsType.CALC_C,
                                      p1=p1,
                                      p2=p2,
                                      data=data)
 
+    def calc_r(self, p1, p2, data) -> RAPDU:
+        if p2 == 0:
+            return self.backend.exchange_async(cla=CLA,
+                                               ins=InsType.CALC_R,
+                                               p1=p1,
+                                               p2=p2,
+                                               data=data)
+        else:
+            return self.backend.exchange(cla=CLA,
+                                         ins=InsType.CALC_R,
+                                         p1=p1,
+                                         p2=p2,
+                                         data=data)
+
     def get_coin_private(self, p1, p2, data) -> RAPDU:
         return self.backend.exchange(cla=CLA,
-                                     ins=InsType.COIN_PRIVATE,
-                                     p1=p1,
-                                     p2=p2,
-                                     data=data)
+                                           ins=InsType.COIN_PRIVATE,
+                                           p1=p1,
+                                           p2=p2,
+                                           data=data)
 
     def decrypt_coin(self, p1, p2, data) -> RAPDU:
         return self.backend.exchange(cla=CLA,
