@@ -11,6 +11,9 @@ jobs:
       image: ghcr.io/ledgerhq/ledger-app-builder/ledger-app-builder:latest
 
     steps:
+      - name: Change Owner of Container Working Directory
+        run: chown root:root .
+
       - uses: actions/checkout@v2
 
       - name: Build with Clang Static Analyzer
@@ -31,6 +34,9 @@ jobs:
       image: ghcr.io/ledgerhq/ledger-app-builder/ledger-app-builder:latest
 
     steps:
+      - name: Change Owner of Container Working Directory
+        run: chown root:root .
+        
       - name: Clone
         uses: actions/checkout@v2
 
@@ -86,6 +92,9 @@ jobs:
       options: --entrypoint /bin/bash
 
     steps:
+      - name: Change Owner of Container Working Directory
+        run: chown root:root .
+
       - name: Clone
         uses: actions/checkout@v2
 
