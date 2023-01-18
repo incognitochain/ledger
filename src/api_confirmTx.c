@@ -72,7 +72,6 @@ UX_FLOW(ux_display_confirm_flow,
 void handleConfirmTx(uint8_t p1, uint8_t p2, uint8_t* dataBuffer, uint16_t dataLength, volatile unsigned int* flags, volatile unsigned int* tx)
 {
     UNUSED(dataLength);
-    UNUSED(p2);
     UNUSED(p1);
     UNUSED(tx);
 
@@ -83,10 +82,14 @@ void handleConfirmTx(uint8_t p1, uint8_t p2, uint8_t* dataBuffer, uint16_t dataL
     //parse ammount
     uint64_t amountRaw;
     incognito_decode_varint(dataBuffer, 8, &amountRaw);
-    // (dataBuffer[0]) |(dataBuffer[1]) << 8 | (dataBuffer[2]) << 16 | (dataBuffer[3]) << 24 | (dataBuffer[4]) << 32 | (dataBuffer[5]) << 40 | (dataBuffer[6]) << 48 | (dataBuffer[7]) << 56;
-    PRINTF(amount, "%f", amountRaw / 1e9);
-
-
+    if (p2 == 6) 
+    {
+        PRINTF(amount, "%f", amountRaw / 1e6);
+    } 
+    else 
+    {
+         PRINTF(amount, "%f", amountRaw / 1e9);
+    }
     //parse address
     memset(processData, 0, sizeof(processData));
     processData[0] = 1;
