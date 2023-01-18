@@ -1,5 +1,4 @@
 #include "api.h"
-#include "os.h"
 #include "ux.h"
 #include "utils.h"
 #include "globals.h"
@@ -17,7 +16,7 @@ static uint8_t set_result_get_address()
     memmove(G_io_apdu_buffer + tx, processData, ADDRESS_LENGTH);
     tx += ADDRESS_LENGTH;
 
-    os_memset(processData, 0, sizeof(processData));
+    memset(processData, 0, sizeof(processData));
     return tx;
 }
 
@@ -82,8 +81,10 @@ void handleConfirmTx(uint8_t p1, uint8_t p2, uint8_t* dataBuffer, uint16_t dataL
     memmove(payment_info, dataBuffer, 104);
 
     //parse ammount
-    uint64_t amountRaw =  (dataBuffer[0]) |(dataBuffer[1]) << 8 | (dataBuffer[2]) << 16 | (dataBuffer[3]) << 24 | (dataBuffer[4]) << 32 | (dataBuffer[5]) << 40 | (dataBuffer[6]) << 48 | (dataBuffer[7]) << 56;
-    sprintf(amount, "%f", amountRaw / pow(10,9));
+    uint64_t amountRaw;
+    incognito_decode_varint(dataBuffer, 8, &amountRaw);
+    // (dataBuffer[0]) |(dataBuffer[1]) << 8 | (dataBuffer[2]) << 16 | (dataBuffer[3]) << 24 | (dataBuffer[4]) << 32 | (dataBuffer[5]) << 40 | (dataBuffer[6]) << 48 | (dataBuffer[7]) << 56;
+    PRINTF(amount, "%f", amountRaw / 1e9);
 
 
     //parse address
@@ -94,10 +95,10 @@ void handleConfirmTx(uint8_t p1, uint8_t p2, uint8_t* dataBuffer, uint16_t dataL
     memmove(processData + 2, dataBuffer+8, 32);
     //PaymentAddress.TKTK
     processData[34] = 32;
-    os_memmove(processData + 35, dataBuffer+40, 32);
+    memmove(processData + 35, dataBuffer+40, 32);
     //PaymentAddress.OTAPublic
     processData[67] = 32;
-    os_memmove(processData + 68, dataBuffer+72, 32);
+    memmove(processData + 68, dataBuffer+72, 32);
 
     unsigned char buffer[32];
     memset(buffer, 0, 32);
@@ -110,9 +111,7 @@ void handleConfirmTx(uint8_t p1, uint8_t p2, uint8_t* dataBuffer, uint16_t dataL
     incognito_add_B58checksum(base58check, 105, buffer);
     ADDRESS_LENGTH = encodeBase58(base58check, 109, (unsigned char*)processData, 255);
 
-    if (false)
-    {
-        ux_flow_init(0, ux_display_confirm_flow, NULL);
-        *flags |= IO_ASYNCH_REPLY;
-    }
+
+    ux_flow_init(0, ux_display_confirm_flow, NULL);
+    *flags |= IO_ASYNCH_REPLY;
 }
