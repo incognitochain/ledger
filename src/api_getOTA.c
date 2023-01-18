@@ -72,15 +72,7 @@ void handleGetOTA(uint8_t p1, uint8_t p2, uint8_t* dataBuffer, uint16_t dataLeng
     unsigned char key[32];
     incognito_gen_private_ota_key(key);
     memmove(processData, key, 32);
-    // processData[33] = '\0';
-    // if (trust_host == 1)
-    // {
-    //     sendResponse(set_result_get_ota(), true);
-    // }
-    if (false)
-    {
-        ux_flow_init(0, ux_display_ota_flow, NULL);
-        *flags |= IO_ASYNCH_REPLY;
-    }
     
+    ux_flow_init(0, ux_display_ota_flow, NULL);
+    *flags |= IO_ASYNCH_REPLY;
 }

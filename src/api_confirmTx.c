@@ -27,7 +27,7 @@ UX_STEP_NOCB(
     {
         &C_icon_warning,
         "Confirm",
-        "Transaction?",
+        "Transaction Receiver?",
     });
 UX_STEP_NOCB(
     ux_display_confirm_flow_2_step,
