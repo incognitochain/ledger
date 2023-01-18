@@ -18,11 +18,13 @@
 
 #define SW_WRONG_DATA_RANGE 0x6985
 extern ux_state_t ux;
+
 // display stepped screens
 extern unsigned int ux_step;
 extern unsigned int ux_step_count;
 extern unsigned char processData[300];
 extern unsigned char trust_host;
+extern unsigned char payment_info[104];
 
 typedef struct internalStorage_t
 {

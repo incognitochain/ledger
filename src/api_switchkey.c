@@ -91,6 +91,5 @@ void handleSwitchAccount(uint8_t p1, uint8_t p2, uint8_t* dataBuffer, uint16_t d
     explicit_bzero(processData, sizeof(processData));
     memmove(processData, dataBuffer, 4);
     accNum = (processData[0] << 24) | (processData[1] << 16) | (processData[2] << 8) | (processData[3]);
-    sendResponse(set_result_switch_account(), true);
-    
+    sendResponse(set_result_switch_account(), true);            
 };
