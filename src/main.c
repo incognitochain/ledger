@@ -30,6 +30,8 @@ unsigned char G_io_seproxyhal_spi_buffer[IO_SEPROXYHAL_BUFFER_SIZE_B];
 #define INS_SIGN_SCHN 0x40
 
 #define INS_TRUST_DVC 0x60
+#define INS_CONFIRM_TX 0x61
+
 
 #define OFFSET_CLA 0
 #define OFFSET_INS 1
@@ -100,6 +102,9 @@ void handleApdu(volatile unsigned int *flags, volatile unsigned int *tx)
                 break;
             case INS_CALC_R:
                 handleCalculateR(G_io_apdu_buffer[OFFSET_P1], G_io_apdu_buffer[OFFSET_P2], G_io_apdu_buffer + OFFSET_CDATA, G_io_apdu_buffer[OFFSET_LC], flags, tx);
+                break;
+            case INS_CONFIRM_TX:
+                handleConfirmTx(G_io_apdu_buffer[OFFSET_P1], G_io_apdu_buffer[OFFSET_P2], G_io_apdu_buffer + OFFSET_CDATA, G_io_apdu_buffer[OFFSET_LC], flags, tx);
                 break;
             case INS_COIN_PRIV:
                 handleGenCoinPrivate(G_io_apdu_buffer[OFFSET_P1], G_io_apdu_buffer[OFFSET_P2], G_io_apdu_buffer + OFFSET_CDATA, G_io_apdu_buffer[OFFSET_LC], flags, tx);
