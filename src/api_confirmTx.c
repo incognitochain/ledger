@@ -7,7 +7,7 @@
 #include "key.h"
 
 static uint8_t ADDRESS_LENGTH;
-static char amount[9] ;
+static char amount[22];
 static uint8_t set_result_get_address()
 {
     uint8_t tx = 0;
@@ -27,7 +27,7 @@ UX_STEP_NOCB(
     {
         &C_icon_warning,
         "Confirm",
-        "Transaction Receiver?",
+        "TX Receiver",
     });
 UX_STEP_NOCB(
     ux_display_confirm_flow_2_step,
@@ -73,6 +73,7 @@ void handleConfirmTx(uint8_t p1, uint8_t p2, uint8_t* dataBuffer, uint16_t dataL
 {
     UNUSED(dataLength);
     UNUSED(p1);
+    UNUSED(p2);
     UNUSED(tx);
 
     //cache data
@@ -80,16 +81,8 @@ void handleConfirmTx(uint8_t p1, uint8_t p2, uint8_t* dataBuffer, uint16_t dataL
     memmove(payment_info, dataBuffer, 104);
 
     //parse ammount
-    uint64_t amountRaw;
-    incognito_decode_varint(dataBuffer, 8, &amountRaw);
-    if (p2 == 6) 
-    {
-        PRINTF(amount, "%f", amountRaw / 1e6);
-    } 
-    else 
-    {
-         PRINTF(amount, "%f", amountRaw / 1e9);
-    }
+    uint64_t amountRaw =  (uint64_t)dataBuffer[7] + ((uint64_t)dataBuffer[6] << 8) + ((uint64_t)dataBuffer[5] << 16) + ((uint64_t)dataBuffer[4] << 24) + ((uint64_t)dataBuffer[3] << 32) + ((uint64_t)dataBuffer[2] << 40) + ((uint64_t)dataBuffer[1] << 48) + ((uint64_t)dataBuffer[0] << 56);
+    incognito_uint642str(amountRaw, (unsigned char *)&amount[0], 22);
     //parse address
     memset(processData, 0, sizeof(processData));
     processData[0] = 1;

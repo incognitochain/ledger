@@ -101,11 +101,11 @@ unsigned int incognito_decode_varint(unsigned char *varint, unsigned int max_len
         {
             THROW(SW_WRONG_DATA_RANGE);
         }
-        v = v + ((uint64_t)((varint[len]) & 0x7f) << (len * 7));
+        v = v + ((uint64_t)((varint[len]) & 0x7f) << (len * 8));
         len++;
     }
 
-    v = v + ((uint64_t)((varint[len]) & 0x7f) << (len * 7));
+    v = v + ((uint64_t)((varint[len]) & 0x7f) << (len * 8));
     *value = v;
     return len + 1;
 }
@@ -902,14 +902,15 @@ void incognito_rng_range(unsigned char *r, uint8_t *max)
 /* ---                                                                 --- */
 /* ----------------------------------------------------------------------- */
 /* return 0 if ok, 1 if missing decimal */
-void incognito_uint642str(uint64_t val, char *str, unsigned int str_len)
+void incognito_uint642str(uint64_t val, unsigned char *str, unsigned int str_len)
 {
     char stramount[22];
     unsigned int offset, len;
 
-    memset(str, 0, str_len);
+    // memset(str, 0, str_len);
 
-    offset = 22;
+    offset = 21;
+    stramount[offset] = '\0';
     while (val)
     {
         offset--;
@@ -917,11 +918,11 @@ void incognito_uint642str(uint64_t val, char *str, unsigned int str_len)
         val = val / 10;
     }
     len = sizeof(stramount) - offset;
-    if (len > str_len)
+    if (len + 1 > str_len)
     {
         THROW(SW_WRONG_DATA_RANGE);
     }
-    memmove(str, stramount + offset, len);
+    memmove(str, stramount + offset, len + 1);
 }
 
 /* ----------------------------------------------------------------------- */
