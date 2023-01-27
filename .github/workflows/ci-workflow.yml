@@ -7,7 +7,6 @@ on:
       - master
       - main
       - develop
-      - review
   pull_request:
 
 jobs:

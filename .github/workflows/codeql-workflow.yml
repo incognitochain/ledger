@@ -7,7 +7,6 @@ on:
       - master
       - main
       - develop
-      - review
   pull_request:
     # Excluded path: add the paths you want to ignore instead of deleting the workflow
     paths-ignore:
